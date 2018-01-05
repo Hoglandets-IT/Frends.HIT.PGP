@@ -6,7 +6,7 @@
 		<title>Frends Community PgpEncrypt</title>
 		<authors>HiQ Finland</authors>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
-		<description>Various PgpEncrypt operations</description>
+		<description>Encrypt file using PGP.</description>
 		<summary />
 		<dependencies>
 			<dependency id="Frends.Tasks.Attributes" version="1.2.1" />
@@ -18,7 +18,7 @@
     <releaseNotes>Fixed nuspec</releaseNotes>
   </metadata>
 	<files>
-		<file src="..\Frends.Community.GenerateHash\bin\release\Frends.Community.PgpEncrypt.dll" target="lib\net45\Frends.Community.PgpEncrypt.dll" />
-		<file src="..\Frends.Community.GenerateHash\bin\release\Frends.Community.PgpEncrypt.XML" target="lib\net45\Frends.Community.PgpEncrypt.XML" />
+		<file src="..\Frends.Community.PgpEncrypt\bin\release\Frends.Community.PgpEncrypt.dll" target="lib\net45\Frends.Community.PgpEncrypt.dll" />
+		<file src="..\Frends.Community.PgpEncrypt\bin\release\Frends.Community.PgpEncrypt.XML" target="lib\net45\Frends.Community.PgpEncrypt.XML" />
 	</files>
 </package>

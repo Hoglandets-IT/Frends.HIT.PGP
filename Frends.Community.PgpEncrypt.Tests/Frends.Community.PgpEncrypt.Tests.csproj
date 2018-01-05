@@ -7,8 +7,8 @@
     <ProjectGuid>{067456C0-086C-46A8-B37F-1405717B7BFC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FRENDS.Community.Pgp.Tests</RootNamespace>
-    <AssemblyName>FRENDS.Community.Pgp.Tests</AssemblyName>
+    <RootNamespace>FRENDS.Community.PgpEncrypt.Tests</RootNamespace>
+    <AssemblyName>FRENDS.Community.PgpEncrypt.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -54,12 +54,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Frends.Community.PgpEncrypt\Frends.Community.PgpEncrypt.csproj">
-      <Project>{97d07b5f-7d31-4d07-b89a-f4087ebeb82b}</Project>
-      <Name>Frends.Community.PgpEncrypt</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
