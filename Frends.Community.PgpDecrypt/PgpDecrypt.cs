@@ -3,6 +3,8 @@ using Org.BouncyCastle.Bcpg.OpenPgp;
 using System.IO;
 using Org.BouncyCastle.Utilities.IO;
 using System.ComponentModel;
+using Frends.Tasks.Attributes;
+
 
 #pragma warning disable 1591
 
@@ -15,16 +17,19 @@ namespace FRENDS.Community.PgpDecrypt
         /// Path to file to decrypt.
         /// </summary>
         [DefaultValue(@"C:\temp\encryptedFile.pgp")]
+        [DefaultDisplayType(DisplayType.Text)]
         public string InputFile { get; set; }
         /// <summary>
         /// Path to file that will be create.
         /// </summary>
         [DefaultValue(@"C:\temp\decrypted_file.txt")]
+        [DefaultDisplayType(DisplayType.Text)]
         public string OutputFile { get; set; }
         /// <summary>
         /// Private key used to decrypt file.
         /// </summary>
         [DefaultValue(@"C:\temp\privateKey.asc")]
+        [DefaultDisplayType(DisplayType.Text)]
         public string PrivateKeyFile { get; set; }
         /// <summary>
         /// Password for private key.
@@ -44,10 +49,9 @@ namespace FRENDS.Community.PgpDecrypt
 
     public class FRENDSTaskDecrypt
         {
-        /*
-        * decrypt a given file.
-        */
-
+        /// <summary>
+        /// Decrypt the file using the private key.
+        /// </summary>
         public static Result PgpDecrypt(Input input)
         {
             if (!File.Exists(input.InputFile))
