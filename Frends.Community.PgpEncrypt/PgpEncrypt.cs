@@ -3,7 +3,6 @@ using Org.BouncyCastle.Bcpg.OpenPgp;
 using System.IO;
 using Org.BouncyCastle.Bcpg;
 using Org.BouncyCastle.Security;
-using Frends.Tasks.Attributes;
 using System.ComponentModel;
 
 #pragma warning disable 1591
@@ -31,7 +30,7 @@ namespace FRENDS.Community.PgpEncrypt
         /// Use ascii armor or not.
         /// </summary>
         [DefaultValue("true")]
-        public bool Armor { get; set; }
+        public bool UseArmor { get; set; }
         /// <summary>
         /// Check integrity of output file or not.
         /// </summary>
@@ -51,7 +50,7 @@ namespace FRENDS.Community.PgpEncrypt
         /// <summary>
         /// Encrypt the file using the public key of the intended recipients.
         /// </summary>
-        public static bool PgpEncrypt(Input input)
+        public static Result PgpEncrypt(Input input)
         {
             try
             {
@@ -72,7 +71,7 @@ namespace FRENDS.Community.PgpEncrypt
 
                         using (Stream outputStream = File.Create(input.OutputFile))
                         {
-                            if (input.Armor)
+                            if (input.UseArmor)
                             {
                                 using (ArmoredOutputStream armoredStream = new ArmoredOutputStream(outputStream))
                                 {
@@ -91,7 +90,13 @@ namespace FRENDS.Community.PgpEncrypt
                             }
                         }
                     }
-                    return true;
+
+                    Result ret = new Result
+                    {
+                        FilePath = input.OutputFile
+                    };
+
+                    return ret;
                 }
             }
             catch (PgpException e)
