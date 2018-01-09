@@ -16,13 +16,13 @@ namespace FRENDS.Community.PgpEncrypt.Tests
 
 
         [TearDown]
-        public void AlwaysTrue2()
+        public void DeleteTmpFile()
         {
             File.Delete(encrypted_message);
         }
 
         [Test]
-        public void AlwaysTrue()
+        public void EncryptFile()
         {
             Input input = new Input
             {

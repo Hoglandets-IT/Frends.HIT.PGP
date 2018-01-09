@@ -4,6 +4,7 @@ using System.IO;
 using Org.BouncyCastle.Bcpg;
 using Org.BouncyCastle.Security;
 using System.ComponentModel;
+using Frends.Tasks.Attributes;
 
 #pragma warning disable 1591
 
@@ -15,16 +16,19 @@ namespace FRENDS.Community.PgpEncrypt
         /// Path to file being encrypted.
         /// </summary>
         [DefaultValue(@"C:\temp\message.txt")]
+        [DefaultDisplayType(DisplayType.Text)]
         public string InputFile { get; set; }
         /// <summary>
         /// Path to encrypted file that will be create.
         /// </summary>
         [DefaultValue(@"C:\temp\encryptedFile.pgp")]
+        [DefaultDisplayType(DisplayType.Text)]
         public string OutputFile { get; set; }
         /// <summary>
         /// Path to recipients public key.
         /// </summary>
         [DefaultValue(@"C:\temp\publicKey.asc")]
+        [DefaultDisplayType(DisplayType.Text)]
         public string PublicKeyFile { get; set; }
         /// <summary>
         /// Use ascii armor or not.
@@ -45,6 +49,7 @@ namespace FRENDS.Community.PgpEncrypt
         /// </summary>
         public string FilePath { get; set; }
     }
+
     public class FRENDSTaskEncrypt
     {
         /// <summary>
