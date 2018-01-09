@@ -16,13 +16,13 @@ namespace FRENDS.Community.PgpDecrypt.Tests
 
 
         [TearDown]
-        public void AlwaysTrue2()
+        public void DeleteTmpFile()
         {
-            File.Delete(encrypted_message);
+            File.Delete(decrypted_message);
         }
 
         [Test]
-        public void AlwaysTrue()
+        public void DecryptFile()
         {
             Input input = new Input
             {
@@ -37,7 +37,6 @@ namespace FRENDS.Community.PgpDecrypt.Tests
             string result = File.ReadAllText(result_object.FilePath);
 
             string expectedResult = "\"Secret\" message that contains kanji (漢字) to test utf-8 compatibility.";
-            // Rest of the file is random.
 
             Assert.That(Regex.Replace(result, @"[\s+]", ""), Does.StartWith(Regex.Replace(expectedResult, @"[\s+]", "")));
 
