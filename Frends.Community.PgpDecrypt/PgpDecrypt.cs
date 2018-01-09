@@ -2,36 +2,76 @@
 using Org.BouncyCastle.Bcpg.OpenPgp;
 using System.IO;
 using Org.BouncyCastle.Utilities.IO;
+using System.ComponentModel;
 
 #pragma warning disable 1591
 
 namespace FRENDS.Community.PgpDecrypt
 {
-    public class FRENDSTaskDecrypt
+    public class Input
     {
+
+        /// <summary>
+        /// Path to file to decrypt.
+        /// </summary>
+        [DefaultValue(@"C:\temp\encryptedFile.pgp")]
+        public string InputFile { get; set; }
+        /// <summary>
+        /// Path to file that will be create.
+        /// </summary>
+        [DefaultValue(@"C:\temp\decrypted_file.txt")]
+        public string OutputFile { get; set; }
+        /// <summary>
+        /// Private key used to decrypt file.
+        /// </summary>
+        [DefaultValue(@"C:\temp\privateKey.asc")]
+        public string PrivateKeyFile { get; set; }
+        /// <summary>
+        /// Password for private key.
+        /// </summary>
+        [PasswordPropertyText]
+        public string PassPhrase { get; set; }
+
+    }
+    public class Result
+    {
+        /// <summary>
+        /// Result class.
+        /// </summary>
+        public string FilePath { get; set; }
+    }
+
+
+    public class FRENDSTaskDecrypt
+        {
         /*
         * decrypt a given file.
         */
 
-        public static bool PgpDecrypt(string inputfile, string privateKeyFile, string passPhrase, string outputFile)
+        public static Result PgpDecrypt(Input input)
         {
-            if (!File.Exists(inputfile))
-                throw new FileNotFoundException(String.Format("Encrypted File [{0}] not found.", inputfile));
+            if (!File.Exists(input.InputFile))
+                throw new FileNotFoundException(String.Format("Encrypted File [{0}] not found.", input.InputFile));
 
-            if (!File.Exists(privateKeyFile))
-                throw new FileNotFoundException(String.Format("Private Key File [{0}] not found.", privateKeyFile));
+            if (!File.Exists(input.PrivateKeyFile))
+                throw new FileNotFoundException(String.Format("Private Key File [{0}] not found.", input.PrivateKeyFile));
 
-            if (String.IsNullOrEmpty(outputFile))
+            if (String.IsNullOrEmpty(input.OutputFile))
                 throw new ArgumentNullException("Invalid Output file path.");
 
-            using (Stream inputStream = File.OpenRead(inputfile))
+            using (Stream inputStream = File.OpenRead(input.InputFile))
             {
-                using (Stream keyIn = File.OpenRead(privateKeyFile))
+                using (Stream keyIn = File.OpenRead(input.PrivateKeyFile))
                 {
-                    Decrypt(inputStream, keyIn, passPhrase, outputFile);
+                    Decrypt(inputStream, keyIn, input.PassPhrase, input.OutputFile);
                 }
             }
-            return true;
+            Result ret = new Result
+            {
+                FilePath = input.OutputFile
+            };
+
+            return ret;
         }
 
         private static bool Decrypt(Stream inputStream, Stream privateKeyStream, string passPhrase, string outputFile)
