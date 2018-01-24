@@ -36,10 +36,27 @@ namespace FRENDS.Community.PgpClearTextSignature
         /// </summary>
         public string Password { get; set; }
         /// <summary>
-        /// Hash function, such as SHA256, SHA384, SHA512, MD5, RIPEMD160, SHA1.
+        /// Hash (digest) function, such as SHA256, SHA384, SHA512, MD5, RIPEMD160, SHA1.
         /// </summary>
-        public string HashFunction { get; set; }
+        // public HashAlgorithmTag HashFunction { get; set; }
+        [DefaultValue(HashFunctionType.Sha256)]
+        public HashFunctionType HashFunction { get; set; }
     }
+
+    /// <summary>
+    /// Enum for choosing HashAlgorithm type.
+    /// </summary>
+    public enum HashFunctionType
+    {
+        MD5,
+        Sha1,
+        RipeMD160,
+        Sha224,
+        Sha256,
+        Sha384,
+        Sha512
+    }
+    
 
     public class Result
     {
@@ -51,40 +68,39 @@ namespace FRENDS.Community.PgpClearTextSignature
 
     public class FRENDSTask
     {
-
-
-
-
         /*
         * create a clear text signed file.
         */
         public static Result SignFileClearText(Input input)
         {
             HashAlgorithmTag digest;
-
-            if (input.HashFunction.Equals("SHA256", StringComparison.OrdinalIgnoreCase))
-            {
-                digest = HashAlgorithmTag.Sha256;
-            }
-            else if (input.HashFunction.Equals("SHA384", StringComparison.OrdinalIgnoreCase))
-            {
-                digest = HashAlgorithmTag.Sha384;
-            }
-            else if (input.HashFunction.Equals("SHA512", StringComparison.OrdinalIgnoreCase))
-            {
-                digest = HashAlgorithmTag.Sha512;
-            }
-            else if (input.HashFunction.Equals("MD5", StringComparison.OrdinalIgnoreCase))
+            if (input.HashFunction == HashFunctionType.MD5)
             {
                 digest = HashAlgorithmTag.MD5;
             }
-            else if (input.HashFunction.Equals("RIPEMD160", StringComparison.OrdinalIgnoreCase))
+            else if (input.HashFunction == HashFunctionType.RipeMD160)
             {
                 digest = HashAlgorithmTag.RipeMD160;
             }
-            else
+            else if (input.HashFunction == HashFunctionType.Sha1)
             {
                 digest = HashAlgorithmTag.Sha1;
+            }
+            else if (input.HashFunction == HashFunctionType.Sha224)
+            {
+                digest = HashAlgorithmTag.Sha224;
+            }
+            else if (input.HashFunction == HashFunctionType.Sha384)
+            {
+                digest = HashAlgorithmTag.Sha384;
+            }
+            else if (input.HashFunction == HashFunctionType.Sha512)
+            {
+                digest = HashAlgorithmTag.Sha512;
+            }
+            else
+            {
+                digest = HashAlgorithmTag.Sha256;
             }
 
             Stream privateKeyStream = File.OpenRead(input.PrivateKeyFile);
@@ -155,8 +171,6 @@ namespace FRENDS.Community.PgpClearTextSignature
             return ret;
         }
 
-
-
         private static int ReadInputLine(
         MemoryStream bOut,
         Stream fIn)
@@ -207,7 +221,6 @@ namespace FRENDS.Community.PgpClearTextSignature
             return lookAhead;
         }
 
-
         internal static PgpSecretKey ReadSecretKey(Stream input)
         {
             PgpSecretKeyRingBundle pgpSec = new PgpSecretKeyRingBundle(
@@ -232,7 +245,6 @@ namespace FRENDS.Community.PgpClearTextSignature
             throw new ArgumentException("Can't find signing key in key ring.");
         }
 
-
         private static int ReadPassedEol(
         MemoryStream bOut,
         int lastCh,
@@ -248,8 +260,7 @@ namespace FRENDS.Community.PgpClearTextSignature
 
             return lookAhead;
         }
-
-
+    
         private static void ProcessLine(
             Stream aOut,
             PgpSignatureGenerator sGen,

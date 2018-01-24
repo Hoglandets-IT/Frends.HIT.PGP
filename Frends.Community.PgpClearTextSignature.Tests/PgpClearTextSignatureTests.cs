@@ -17,7 +17,7 @@ namespace FRENDS.Community.PgpClearTextSignature.Tests
         private readonly static string key_password = "kissa2";
 
         [Test]
-        public void ALwaystrue()
+        public void SignOneFileSha1()
         {
             Input input = new Input
             {
@@ -25,7 +25,7 @@ namespace FRENDS.Community.PgpClearTextSignature.Tests
                 OutputFile = signed_message,
                 PrivateKeyFile = private_key_path,
                 Password = key_password,
-                HashFunction = key_password,
+                HashFunction = HashFunctionType.Sha1,
             };
 
             Result result_object = FRENDSTask.SignFileClearText(input);
@@ -36,9 +36,6 @@ namespace FRENDS.Community.PgpClearTextSignature.Tests
             // Rest of the file is random.
 
             Assert.That(Regex.Replace(result, @"[\s+]", ""), Does.StartWith(Regex.Replace(expectedResult, @"[\s+]", "")));
-
-
-
 
         }
     }
