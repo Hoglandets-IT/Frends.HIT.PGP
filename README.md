@@ -1,16 +1,16 @@
-- [Frends.Community.PgpEncrypt](#Frends.Community.PgpEncrypt)
+- [Frends.Community.PgpClearTextSignature](#Frends.Community.PgpClearTextSignature)
    - [Installing](#installing)
    - [Building](#building)
    - [Contributing](#contributing)
    - [Documentation](#documentation)
-      - [PgpEncrypt](#convertExcelFile)
+      - [PgpClearTextSignature](#convertExcelFile)
 		 - [Input](#input)
 		 - [Options](#options)
 		 - [Result](#result)
    - [License](#license)
        
-# Frends.Community.PgpEncrypt
-This repository contais FRENDS4 Community Task to decrypt PGP encrypted messages
+# Frends.Community.PgpClearTextSignature
+This repository contais FRENDS4 Community Task to add PGP at the end of text file. 
 
 ## Installing
 You can install the task via Frends UI Task view or you can find the nuget package from the following nuget feed
@@ -21,21 +21,21 @@ Ensure that you have https://www.myget.org/F/frends/api/v3/index.json added to y
 
 Clone a copy of the repo
 
-git clone https://github.com/CommunityHiQ/Frends.Community.PgpEncrypt.git
+git clone https://github.com/CommunityHiQ/Frends.Community.PgpClearTextSignature.git
 
 Restore dependencies
 
-nuget restore Frends.Community.PgpEncrypt
+nuget restore Frends.Community.PgpClearTextSignature
 
 Rebuild the project
 
 Run Tests with nunit3. Tests can be found under
 
-Frends.Community.PgpEncryptTests\bin\Release\Frends.Community.PgpEncrypt.Tests.dll
+Frends.Community.PgpClearTextSignatureTests\bin\Release\Frends.Community.PgpClearTextSignature.Tests.dll
 
 Create a nuget package
 
-`nuget pack nuspec/Frends.Community.PgpEncrypt.nuspec`
+`nuget pack nuspec/Frends.Community.PgpClearTextSignature.nuspec`
 
 ## Contributing
 When contributing to this repository, please first discuss the change you wish to make via issue, email, or any other method with the owners of this repository before making a change.
@@ -50,23 +50,23 @@ NOTE: Be sure to merge the latest from "upstream" before making a pull request!
 
 ## Documentation
 
-### PgpEncrypt
+### PgpClearTextSignature
 
-Desrypts files that are encrypted with PGP.
+Sings text files with PGP clear text signature.
 
 #### Input
 | Property  | Type  | Description |Example|
 |-----------|-------|-------------|-------|
 | InputFile  | string | Path to file to decrypt. | `C:\temp\message.txt`
-| OutputFile  | string | Path to file that will be created. | `C:\temp\encryptedFile.pgp`
-| PublicKeyFile  | string | Path to recipients public key. | `C:\temp\publicKey.asc`
-| UseArmor  | string |  Use ascii armor or not. | `true`
-| UseIntegrityCheck  | string | Check integrity of output file or not. | `true`
+| OutputFile  | string | Path to file that will be created. | `C:\temp\signed_message.txt`
+| PrivateKeyFile  | string | Path to private key used to sign the file. 	 | `C:\temp\privateKey.asc`
+| Password  | string |  Password for private key. | `***`
+| HashFunction  | string | Hash function being used. | `SHA256`
 
 #### Result
 | Property  | Type  | Description |Example|
 |-----------|-------|-------------|-------|
-| FilePath | string  | Path to file that contains encrypted file. Note: this is same path that was given as input parameter OutputFile. Copying that path to result will enable easy references in Frends, such as #result[PgpEncrypt].FilePath | `C:\temp\encryptedFile.pgp`
+| FilePath | string  | Path to file that contains sidned file. Note: this is same path that was given as input parameter OutputFile. Copying that path to result will enable easy references in Frends, such as #result[PgpClearTextSignature].FilePath | `C:\temp\signed_message.txt`
 
 ## License
 This project is licensed under the MIT License - see the LICENSE file for details
