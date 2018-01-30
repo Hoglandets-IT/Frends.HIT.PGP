@@ -28,11 +28,11 @@ namespace FRENDS.Community.PgpClearTextSignature.Tests
                 HashFunction = HashFunctionType.Sha1,
             };
 
-            Result result_object = FRENDSTask.SignFileClearText(input);
+            Result result_object = PgpClearTextSignatureTask.PGPClearTextSignFile(input);
 
             string result = File.ReadAllText(result_object.FilePath);
 
-            string expectedResult = "-----BEGINPGPSIGNEDMESSAGE-----Hash:SHA1\"Secret\"messagethatcontainskanji(漢字)totestutf-8compatibility.-----BEGINPGPSIGNATURE-----Version:BCPGC#v1.8.1.0iLkEAQECACMFAlpo";
+            string expectedResult = "-----BEGINPGPSIGNEDMESSAGE-----Hash:SHA1\"Secret\"messagethatcontainskanji(漢字)totestutf-8compatibility.-----BEGINPGPSIGNATURE-----Version:BCPGC#v1.8.1.0iLkEAQECACMFAlp";
             // Rest of the file is random.
 
             Assert.That(Regex.Replace(result, @"[\s+]", ""), Does.StartWith(Regex.Replace(expectedResult, @"[\s+]", "")));

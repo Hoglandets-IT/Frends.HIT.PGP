@@ -34,6 +34,7 @@ namespace FRENDS.Community.PgpClearTextSignature
         /// <summary>
         /// Password attached to private key.
         /// </summary>
+        [PasswordPropertyText]
         public string Password { get; set; }
         /// <summary>
         /// Hash (digest) function, such as SHA256, SHA384, SHA512, MD5, RIPEMD160, SHA1.
@@ -66,12 +67,13 @@ namespace FRENDS.Community.PgpClearTextSignature
         public string FilePath { get; set; }
     }
 
-    public class FRENDSTask
+
+    public class PgpClearTextSignatureTask
     {
-        /*
-        * create a clear text signed file.
-        */
-        public static Result SignFileClearText(Input input)
+        /// <summary>
+        /// Create a file with PGP clear text signature.
+        /// </summary>
+        public static Result PGPClearTextSignFile(Input input)
         {
             HashAlgorithmTag digest;
             if (input.HashFunction == HashFunctionType.MD5)
