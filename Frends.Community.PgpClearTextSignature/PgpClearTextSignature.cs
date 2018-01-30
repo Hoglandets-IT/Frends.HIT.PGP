@@ -71,7 +71,7 @@ namespace FRENDS.Community.PgpClearTextSignature
     public class PgpClearTextSignatureTask
     {
         /// <summary>
-        /// Create a file with PGP clear text signature.
+        /// Create a file with PGP clear text signature. See documentation at https://github.com/CommunityHiQ/Frends.Community.PgpClearTextSignature Returns: Object {string FilePath}
         /// </summary>
         public static Result PGPClearTextSignFile(Input input)
         {
