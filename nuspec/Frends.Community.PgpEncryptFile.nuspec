@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata>
-		<id>Frends.Community.PgpEncrypt</id>
-		<version>1.0.0</version>
-		<title>Frends Community PgpEncrypt</title>
+		<id>Frends.Community.PgpEncryptFile</id>
+		<version>1.0.2</version>
+		<title>Frends Community PgpEncryptFile</title>
 		<authors>HiQ Finland</authors>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>Encrypt file using PGP.</description>
@@ -18,7 +18,7 @@
     <releaseNotes>Fixed nuspec</releaseNotes>
   </metadata>
 	<files>
-		<file src="..\Frends.Community.PgpEncrypt\bin\release\Frends.Community.PgpEncrypt.dll" target="lib\net45\Frends.Community.PgpEncrypt.dll" />
-		<file src="..\Frends.Community.PgpEncrypt\bin\release\Frends.Community.PgpEncrypt.XML" target="lib\net45\Frends.Community.PgpEncrypt.XML" />
+		<file src="..\Frends.Community.PgpEncryptFile\bin\release\Frends.Community.PgpEncryptFile.dll" target="lib\net45\Frends.Community.PgpEncryptFile.dll" />
+		<file src="..\Frends.Community.PgpEncryptFile\bin\release\Frends.Community.PgpEncryptFile.XML" target="lib\net45\Frends.Community.PgpEncryptFile.XML" />
 	</files>
 </package>

@@ -34,7 +34,7 @@ namespace FRENDS.Community.PgpEncrypt.Tests
                 UseArmor = true
             };
 
-            Result result_object = FRENDSTaskEncrypt.PgpEncrypt(input);
+            Result result_object = PgpEncryptFileTask.PgpEncryptFile(input);
 
             string result = File.ReadAllText(result_object.FilePath);
 

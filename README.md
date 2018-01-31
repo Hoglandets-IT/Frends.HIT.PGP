@@ -1,15 +1,15 @@
-- [Frends.Community.PgpEncrypt](#Frends.Community.PgpEncrypt)
+- [Frends.Community.PgpEncryptFile](#Frends.Community.PgpEncryptFile)
    - [Installing](#installing)
    - [Building](#building)
    - [Contributing](#contributing)
    - [Documentation](#documentation)
-      - [PgpEncrypt](#convertExcelFile)
+      - [PgpEncryptFile](#convertExcelFile)
 		 - [Input](#input)
 		 - [Options](#options)
 		 - [Result](#result)
    - [License](#license)
        
-# Frends.Community.PgpEncrypt
+# Frends.Community.PgpEncryptFile
 This repository contais FRENDS4 Community Task to decrypt PGP encrypted messages
 
 ## Installing
@@ -21,21 +21,21 @@ Ensure that you have https://www.myget.org/F/frends/api/v3/index.json added to y
 
 Clone a copy of the repo
 
-git clone https://github.com/CommunityHiQ/Frends.Community.PgpEncrypt.git
+git clone https://github.com/CommunityHiQ/Frends.Community.PgpEncryptFile.git
 
 Restore dependencies
 
-nuget restore Frends.Community.PgpEncrypt
+nuget restore Frends.Community.PgpEncryptFile
 
 Rebuild the project
 
 Run Tests with nunit3. Tests can be found under
 
-Frends.Community.PgpEncryptTests\bin\Release\Frends.Community.PgpEncrypt.Tests.dll
+Frends.Community.PgpEncryptFileTests\bin\Release\Frends.Community.PgpEncryptFile.Tests.dll
 
 Create a nuget package
 
-`nuget pack nuspec/Frends.Community.PgpEncrypt.nuspec`
+`nuget pack nuspec/Frends.Community.PgpEncryptFile.nuspec`
 
 ## Contributing
 When contributing to this repository, please first discuss the change you wish to make via issue, email, or any other method with the owners of this repository before making a change.
@@ -50,7 +50,7 @@ NOTE: Be sure to merge the latest from "upstream" before making a pull request!
 
 ## Documentation
 
-### PgpEncrypt
+### PgpEncryptFile
 
 Desrypts files that are encrypted with PGP.
 
@@ -66,7 +66,7 @@ Desrypts files that are encrypted with PGP.
 #### Result
 | Property  | Type  | Description |Example|
 |-----------|-------|-------------|-------|
-| FilePath | string  | Path to file that contains encrypted file. Note: this is same path that was given as input parameter OutputFile. Copying that path to result will enable easy references in Frends, such as #result[PgpEncrypt].FilePath | `C:\temp\encryptedFile.pgp`
+| FilePath | string  | Path to file that contains encrypted file. Note: this is same path that was given as input parameter OutputFile. Copying that path to result will enable easy references in Frends, such as #result[PgpEncryptFile].FilePath | `C:\temp\encryptedFile.pgp`
 
 ## License
 This project is licensed under the MIT License - see the LICENSE file for details

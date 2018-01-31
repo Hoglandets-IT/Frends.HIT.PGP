@@ -50,12 +50,12 @@ namespace FRENDS.Community.PgpEncrypt
         public string FilePath { get; set; }
     }
 
-    public class FRENDSTaskEncrypt
+    public class PgpEncryptFileTask
     {
         /// <summary>
         /// Encrypt the file using the public key of the intended recipients.
         /// </summary>
-        public static Result PgpEncrypt(Input input)
+        public static Result PgpEncryptFile(Input input)
         {
             try
             {
