@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+	<metadata>
+		<id>Frends.Community.PgpEncryptFile</id>
+		<version>1.0.2</version>
+		<title>Frends Community PgpEncryptFile</title>
+		<authors>HiQ Finland</authors>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<description>Encrypt file using PGP.</description>
+		<summary />
+		<dependencies>
+			<dependency id="Frends.Tasks.Attributes" version="1.2.0" />
+      <dependency id="BouncyCastle" version="1.8.1" />
+    </dependencies>
+		<frameworkAssemblies>
+			<frameworkAssembly assemblyName="System" />
+		</frameworkAssemblies>
+    <releaseNotes>Fixed nuspec</releaseNotes>
+  </metadata>
+	<files>
+		<file src="..\Frends.Community.PgpEncryptFile\bin\release\Frends.Community.PgpEncryptFile.dll" target="lib\net45\Frends.Community.PgpEncryptFile.dll" />
+		<file src="..\Frends.Community.PgpEncryptFile\bin\release\Frends.Community.PgpEncryptFile.XML" target="lib\net45\Frends.Community.PgpEncryptFile.XML" />
+	</files>
+</package>
