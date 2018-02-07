@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2010
+VisualStudioVersion = 15.0.27130.2020
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{2238146A-EABB-4391-A460-0F2A786A31A5}"
 	ProjectSection(SolutionItems) = preProject
@@ -9,9 +9,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Frends.Community.PgpDecrypt", "Frends.Community.PgpDecrypt\Frends.Community.PgpDecrypt.csproj", "{97D07B5F-7D31-4D07-B89A-F4087EBEB82B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Frends.Community.PgpDecrypt", "Frends.Community.PgpDecryptFile\Frends.Community.PgpDecrypt.csproj", "{97D07B5F-7D31-4D07-B89A-F4087EBEB82B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Frends.Community.PgpDecrypt.Tests", "Frends.Community.PgpDecrypt.Tests\Frends.Community.PgpDecrypt.Tests.csproj", "{067456C0-086C-46A8-B37F-1405717B7BFC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Frends.Community.PgpDecrypt.Tests", "Frends.Community.PgpDecryptFile.Tests\Frends.Community.PgpDecrypt.Tests.csproj", "{067456C0-086C-46A8-B37F-1405717B7BFC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

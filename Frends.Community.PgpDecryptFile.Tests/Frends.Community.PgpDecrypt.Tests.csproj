@@ -62,7 +62,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Frends.Community.PgpDecrypt\Frends.Community.PgpDecrypt.csproj">
+    <ProjectReference Include="..\Frends.Community.PgpDecryptFile\Frends.Community.PgpDecrypt.csproj">
       <Project>{97d07b5f-7d31-4d07-b89a-f4087ebeb82b}</Project>
       <Name>Frends.Community.PgpEncrypt</Name>
     </ProjectReference>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata>
-		<id>Frends.Community.PgpDecrypt</id>
+		<id>Frends.Community.PgpDecryptFile</id>
 		<version>1.0.0</version>
 		<title>Frends Community PgpDecrypt</title>
 		<authors>HiQ Finland</authors>
@@ -18,7 +18,7 @@
     <releaseNotes>Initial release</releaseNotes>
   </metadata>
 	<files>
-		<file src="..\Frends.Community.PgpDecrypt\bin\release\Frends.Community.PgpDecrypt.dll" target="lib\net45\Frends.Community.PgpDecrypt.dll" />
-		<file src="..\Frends.Community.PgpDecrypt\bin\release\Frends.Community.PgpDecrypt.XML" target="lib\net45\Frends.Community.PgpDecrypt.XML" />
+		<file src="..\Frends.Community.PgpDecryptFile\bin\release\Frends.Community.PgpDecryptFile.dll" target="lib\net45\Frends.Community.PgpDecryptFile.dll" />
+		<file src="..\Frends.Community.PgpDecryptFile\bin\release\Frends.Community.PgpDecryptFile.XML" target="lib\net45\Frends.Community.PgpDecryptFile.XML" />
 	</files>
 </package>

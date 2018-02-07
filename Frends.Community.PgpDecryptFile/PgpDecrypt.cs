@@ -47,12 +47,12 @@ namespace FRENDS.Community.PgpDecrypt
     }
 
 
-    public class FRENDSTaskDecrypt
-        {
+    public class PgpDecryptFileTask
+    {
         /// <summary>
         /// Decrypt the file using the private key.
         /// </summary>
-        public static Result PgpDecrypt(Input input)
+        public static Result PgpDecryptFile(Input input)
         {
             if (!File.Exists(input.InputFile))
                 throw new FileNotFoundException(String.Format("Encrypted File [{0}] not found.", input.InputFile));

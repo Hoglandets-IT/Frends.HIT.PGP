@@ -33,7 +33,7 @@ namespace FRENDS.Community.PgpDecrypt.Tests
                 PassPhrase = key_password,
             };
 
-            Result result_object = FRENDSTaskDecrypt.PgpDecrypt(input);
+            Result result_object = PgpDecryptFileTask.PgpDecryptFile(input);
 
             string result = File.ReadAllText(result_object.FilePath);
 
