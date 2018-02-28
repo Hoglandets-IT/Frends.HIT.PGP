@@ -49,7 +49,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PgpDecryptTests.cs" />
+    <Compile Include="PgpDecryptFileTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -62,9 +62,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Frends.Community.PgpDecryptFile\Frends.Community.PgpDecrypt.csproj">
+    <ProjectReference Include="..\Frends.Community.PgpDecryptFile\Frends.Community.PgpDecryptFile.csproj">
       <Project>{97d07b5f-7d31-4d07-b89a-f4087ebeb82b}</Project>
-      <Name>Frends.Community.PgpEncrypt</Name>
+      <Name>Frends.Community.PgpDecryptFile</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
