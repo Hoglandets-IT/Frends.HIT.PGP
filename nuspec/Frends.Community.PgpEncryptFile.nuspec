@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata>
 		<id>Frends.Community.PgpEncryptFile</id>
-		<version>1.0.2</version>
+		<version>1.0.7</version>
 		<title>Frends Community PgpEncryptFile</title>
 		<authors>HiQ Finland</authors>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -20,5 +20,6 @@
 	<files>
 		<file src="..\Frends.Community.PgpEncryptFile\bin\release\Frends.Community.PgpEncryptFile.dll" target="lib\net45\Frends.Community.PgpEncryptFile.dll" />
 		<file src="..\Frends.Community.PgpEncryptFile\bin\release\Frends.Community.PgpEncryptFile.XML" target="lib\net45\Frends.Community.PgpEncryptFile.XML" />
+    <file src="..\Frends.Community.PgpEncryptFile\FrendsTaskMetadata.json" target="FrendsTaskMetadata.json" />
 	</files>
 </package>

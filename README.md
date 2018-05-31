@@ -17,25 +17,27 @@ You can install the task via Frends UI Task view or you can find the nuget packa
 https://www.myget.org/F/frends/api/v3/index.json
 
 ## Building
-Ensure that you have https://www.myget.org/F/frends/api/v3/index.json added to your nuget feeds
 
 Clone a copy of the repo
 
+```sh
 git clone https://github.com/CommunityHiQ/Frends.Community.PgpEncryptFile.git
-
+```
 Restore dependencies
 
+```sh
 nuget restore Frends.Community.PgpEncryptFile
-
-Rebuild the project
+```
+Rebuild the project with Release configuration
 
 Run Tests with nunit3. Tests can be found under
 
 Frends.Community.PgpEncryptFileTests\bin\Release\Frends.Community.PgpEncryptFile.Tests.dll
 
 Create a nuget package
-
-`nuget pack nuspec/Frends.Community.PgpEncryptFile.nuspec`
+```sh
+nuget pack nuspec/Frends.Community.PgpEncryptFile.nuspec -properties Configuration=Release
+```
 
 ## Contributing
 When contributing to this repository, please first discuss the change you wish to make via issue, email, or any other method with the owners of this repository before making a change.
@@ -55,13 +57,24 @@ NOTE: Be sure to merge the latest from "upstream" before making a pull request!
 Desrypts files that are encrypted with PGP.
 
 #### Input
-| Property  | Type  | Description |Example|
-|-----------|-------|-------------|-------|
-| InputFile  | string | Path to file to decrypt. | `C:\temp\message.txt`
-| OutputFile  | string | Path to file that will be created. | `C:\temp\encryptedFile.pgp`
-| PublicKeyFile  | string | Path to recipients public key. | `C:\temp\publicKey.asc`
-| UseArmor  | string |  Use ascii armor or not. | `true`
-| UseIntegrityCheck  | string | Check integrity of output file or not. | `true`
+| Property            | Type   | Description |Example|
+|---------------------|--------|-------------|-------|
+| InputFile           | string | Path to file to decrypt.|`C:\temp\message.txt`|
+| OutputFile          | string | Path to file that will be created. | `C:\temp\encryptedFile.pgp`|
+| PublicKeyFile       | string | Path to recipients public key. | `C:\temp\publicKey.asc`|
+| EncryptionAlgorithm | enum   | Algorithm to use when encrypting|`Cast5`|
+| CompressionType     | enum   | Type of compression to use when encrypting|`Zip`|
+| UseArmor            | string | Use ascii armor or not. |`true`|
+| UseIntegrityCheck   | string | Check integrity of output file or not. |`true`|
+| SignWithPrivateKey  | bool   | True if you want to sign the file with private key. In this case the file is first signed and then encrypted|`false`|
+
+#### Signing settings
+Visible only is the file is to be signed
+| Property               | Type   | Description |Example|
+|------------------------|--------|-------------|-------|
+| PrivateKeyFile         | string | Path to private key file to be used with signing|`C:\temp\privateKeyFile.gpg`|
+| PrivateKeyPassword     | string | Password to the private key|`***`|
+| SignatureHashAlgorithm | enum   | Hash algorithm to use with signature|`Sha1`|
 
 #### Result
 | Property  | Type  | Description |Example|
