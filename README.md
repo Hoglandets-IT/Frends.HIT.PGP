@@ -70,6 +70,7 @@ Desrypts files that are encrypted with PGP.
 
 #### Signing settings
 Visible only is the file is to be signed
+
 | Property               | Type   | Description |Example|
 |------------------------|--------|-------------|-------|
 | PrivateKeyFile         | string | Path to private key file to be used with signing|`C:\temp\privateKeyFile.gpg`|
