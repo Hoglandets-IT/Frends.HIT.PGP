@@ -69,7 +69,7 @@ Desrypts files that are encrypted with PGP.
 | SignWithPrivateKey  | bool   | True if you want to sign the file with private key. In this case the file is first signed and then encrypted|`false`|
 
 #### Signing settings
-Visible only is the file is to be signed
+Visible only if the file is to be signed
 
 | Property               | Type   | Description |Example|
 |------------------------|--------|-------------|-------|
