@@ -95,6 +95,7 @@ hIwDzoB5W4N7pN4B", textResult);
                 OutputFile = encrypted_message,
                 PublicKeyFile = public_key_path,
                 EncryptionAlgorithm = encryptionAlgorithm,
+                UseCompression = true,
                 CompressionType = compressionType,
                 UseArmor = true,
                 UseIntegrityCheck = true,
@@ -110,6 +111,35 @@ hIwDzoB5W4N7pN4B", textResult);
             Result taskResult = PgpEncryptFileTask.PgpEncryptFile(input);
             string textResult = File.ReadAllText(taskResult.FilePath);
             
+            // result has to start with pgp prefix, version comment and almost static 16 chars
+            StringAssert.IsMatch(@"^-----BEGIN PGP MESSAGE-----\s{2}Version: BCPG C# v1.8.1.0\s{4}hI(s|w)DzoB5W4N7pN4B", textResult);
+            StringAssert.EndsWith($"-----END PGP MESSAGE-----{Environment.NewLine}", textResult);
+        }
+
+        [Test]
+        public void PgpEncryptFile_ShouldEncryptWithoutCompression()
+        {
+            var input = new Input
+            {
+                InputFile = message_path,
+                OutputFile = encrypted_message,
+                PublicKeyFile = public_key_path,
+                EncryptionAlgorithm = EncryptionAlgorithm.Cast5,
+                UseArmor = true,
+                UseIntegrityCheck = true,
+                UseCompression = false,
+                SignWithPrivateKey = true,
+                SigningSettings = new SigningSettings
+                {
+                    PrivateKeyFile = _privateKey,
+                    PrivateKeyPassword = _privateKeyPassword,
+                    SignatureHashAlgorithm = SignatureHashAlgorithm.Sha256
+                }
+            };
+
+            Result taskResult = PgpEncryptFileTask.PgpEncryptFile(input);
+            string textResult = File.ReadAllText(taskResult.FilePath);
+
             // result has to start with pgp prefix, version comment and almost static 16 chars
             StringAssert.IsMatch(@"^-----BEGIN PGP MESSAGE-----\s{2}Version: BCPG C# v1.8.1.0\s{4}hI(s|w)DzoB5W4N7pN4B", textResult);
             StringAssert.EndsWith($"-----END PGP MESSAGE-----{Environment.NewLine}", textResult);

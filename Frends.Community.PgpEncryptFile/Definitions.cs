@@ -30,28 +30,35 @@ namespace Frends.Community.PgpEncrypt
         public string PublicKeyFile { get; set; }
 
         /// <summary>
-        /// Encryption algorithm to use
-        /// </summary>
-        [DefaultValue(EncryptionAlgorithm.Cast5)]
-        public EncryptionAlgorithm EncryptionAlgorithm { get; set; }
-
-        /// <summary>
-        /// Type of compression to use
-        /// </summary>
-        [DefaultValue(CompressionType.Zip)]
-        public CompressionType CompressionType { get; set; }
-
-        /// <summary>
         /// Use ascii armor or not.
         /// </summary>
-        [DefaultValue("true")]
+        [DefaultValue(true)]
         public bool UseArmor { get; set; }
         
         /// <summary>
         /// Check integrity of output file or not.
         /// </summary>
-        [DefaultValue("true")]
+        [DefaultValue(true)]
         public bool UseIntegrityCheck { get; set; }
+
+        /// <summary>
+        /// Should compression be used?
+        /// </summary>
+        [DefaultValue(true)]
+        public bool UseCompression { get; set; }
+
+        /// <summary>
+        /// Type of compression to use
+        /// </summary>
+        [DefaultValue(CompressionType.Zip)]
+        [UIHint(nameof(UseCompression), "", true)]
+        public CompressionType CompressionType { get; set; }
+
+        /// <summary>
+        /// Encryption algorithm to use
+        /// </summary>
+        [DefaultValue(EncryptionAlgorithm.Cast5)]
+        public EncryptionAlgorithm EncryptionAlgorithm { get; set; }
 
         /// <summary>
         /// Should the encrypted file be signed with private key?
