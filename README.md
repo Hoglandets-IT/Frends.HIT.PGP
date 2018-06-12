@@ -7,7 +7,7 @@
    - [Installing](#installing)
    - [Contributing](#contributing)
    - [License](#license)
-   - [Change log](#changelog)
+   - [Change log](#change-log)
        
 # Frends.Community.PgpEncryptFile
 This repository contais FRENDS4 Community Task to encrypt files with PGP
@@ -85,7 +85,7 @@ NOTE: Be sure to merge the latest from "upstream" before making a pull request!
 ## License
 This project is licensed under the MIT License - see the LICENSE file for details
 
-# Change Log
+## Change Log
 
 | Version | Changes |
 | ------- | ------- |
