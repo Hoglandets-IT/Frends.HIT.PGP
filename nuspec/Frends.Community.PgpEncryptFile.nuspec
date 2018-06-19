@@ -2,23 +2,26 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata>
 		<id>Frends.Community.PgpEncryptFile</id>
-		<version>1.0.2</version>
+		<version>1.1.0</version>
 		<title>Frends Community PgpEncryptFile</title>
 		<authors>HiQ Finland</authors>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>Encrypt file using PGP.</description>
 		<summary />
 		<dependencies>
-			<dependency id="Frends.Tasks.Attributes" version="1.2.0" />
       <dependency id="BouncyCastle" version="1.8.1" />
     </dependencies>
 		<frameworkAssemblies>
 			<frameworkAssembly assemblyName="System" />
+      <frameworkAssembly assemblyName="System.ComponentModel" />
+      <frameworkAssembly assemblyName="System.ComponentModel.DataAnnotations" />
+      <frameworkAssembly assemblyName="System.IO" />
 		</frameworkAssemblies>
-    <releaseNotes>Fixed nuspec</releaseNotes>
+    <releaseNotes>New features (signing, configurable signing, encryption algorithm, compression)</releaseNotes>
   </metadata>
 	<files>
 		<file src="..\Frends.Community.PgpEncryptFile\bin\release\Frends.Community.PgpEncryptFile.dll" target="lib\net45\Frends.Community.PgpEncryptFile.dll" />
 		<file src="..\Frends.Community.PgpEncryptFile\bin\release\Frends.Community.PgpEncryptFile.XML" target="lib\net45\Frends.Community.PgpEncryptFile.XML" />
+    <file src="..\Frends.Community.PgpEncryptFile\FrendsTaskMetadata.json" target="FrendsTaskMetadata.json" />
 	</files>
 </package>

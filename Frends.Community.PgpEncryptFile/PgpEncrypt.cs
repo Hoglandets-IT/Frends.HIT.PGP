@@ -1,108 +1,72 @@
 ﻿using System;
-using Org.BouncyCastle.Bcpg.OpenPgp;
 using System.IO;
 using Org.BouncyCastle.Bcpg;
+using Org.BouncyCastle.Bcpg.OpenPgp;
 using Org.BouncyCastle.Security;
-using System.ComponentModel;
-using Frends.Tasks.Attributes;
 
 #pragma warning disable 1591
 
-namespace FRENDS.Community.PgpEncrypt
+namespace Frends.Community.PgpEncrypt
 {
-    public class Input
-    {
-        /// <summary>
-        /// Path to file being encrypted.
-        /// </summary>
-        [DefaultValue(@"C:\temp\message.txt")]
-        [DefaultDisplayType(DisplayType.Text)]
-        public string InputFile { get; set; }
-        /// <summary>
-        /// Path to encrypted file that will be create.
-        /// </summary>
-        [DefaultValue(@"C:\temp\encryptedFile.pgp")]
-        [DefaultDisplayType(DisplayType.Text)]
-        public string OutputFile { get; set; }
-        /// <summary>
-        /// Path to recipients public key.
-        /// </summary>
-        [DefaultValue(@"C:\temp\publicKey.asc")]
-        [DefaultDisplayType(DisplayType.Text)]
-        public string PublicKeyFile { get; set; }
-        /// <summary>
-        /// Use ascii armor or not.
-        /// </summary>
-        [DefaultValue("true")]
-        public bool UseArmor { get; set; }
-        /// <summary>
-        /// Check integrity of output file or not.
-        /// </summary>
-        [DefaultValue("true")]
-        public bool UseIntegrityCheck { get; set; }
-    }
-
-    public class Result
-    {
-        /// <summary>
-        /// Result class.
-        /// </summary>
-        public string FilePath { get; set; }
-    }
-
     public class PgpEncryptFileTask
     {
+        private const int BUFFER_SIZE = 1 << 16;
+
         /// <summary>
-        /// Encrypt the file using the public key of the intended recipients.
+        /// Encrypts a file using public key.
+        /// If needed, the file can also be signed with private key, in this case, the order is sign and encrypt.
+        /// See https://github.com/CommunityHiQ/Frends.Community.PgpEncryptFile
         /// </summary>
+        /// <param name="input">Task input</param>
+        /// <returns>Returns: Object {string FilePath}</returns>
         public static Result PgpEncryptFile(Input input)
         {
+            // source file to encrypt
+            FileInfo inputFile = new FileInfo(input.InputFile);
+
+            if (!inputFile.Exists)
+                throw new ArgumentException("File to encrypt does not exists", "input.InputFile");
+            
             try
             {
-                using (Stream publicKeyStream = File.OpenRead(input.PublicKeyFile))
+                // destination file
+                using (Stream outputStream = File.OpenWrite(input.OutputFile))
+                // ascii output?
+                using (Stream armoredStream = input.UseArmor ? new ArmoredOutputStream(outputStream) : outputStream)
+                using (Stream encryptedOut = GetEncryptionStream(armoredStream, input))
+                using (Stream compressedOut = GetCompressionStream(encryptedOut, input))
                 {
-                    PgpPublicKey encKey = ReadPublicKey(publicKeyStream);
+                    // signature init - if necessary
+                    PgpSignatureGenerator signatureGenerator = input.SignWithPrivateKey ? InitPgpSignatureGenerator(compressedOut, input) : null;
 
-                    using (MemoryStream bOut = new MemoryStream())
+                    // writing to configured output
+                    PgpLiteralDataGenerator literalDataGenerator = new PgpLiteralDataGenerator();
+                    using (Stream literalOut = literalDataGenerator.Open(compressedOut, PgpLiteralData.Binary, new FileInfo(input.InputFile)))
+                    using (FileStream inputStream = inputFile.OpenRead())
                     {
-                        PgpCompressedDataGenerator comData = new PgpCompressedDataGenerator(CompressionAlgorithmTag.Zip);
-                        PgpUtilities.WriteFileToLiteralData(comData.Open(bOut), PgpLiteralData.Binary, new FileInfo(input.InputFile));
+                        byte[] buf = new byte[BUFFER_SIZE];
+                        int len;
 
-                        comData.Close();
-                        PgpEncryptedDataGenerator cPk = new PgpEncryptedDataGenerator(SymmetricKeyAlgorithmTag.Cast5, input.UseIntegrityCheck, new SecureRandom());
-
-                        cPk.AddMethod(encKey);
-                        byte[] bytes = bOut.ToArray();
-
-                        using (Stream outputStream = File.Create(input.OutputFile))
+                        while ((len = inputStream.Read(buf, 0, buf.Length)) > 0)
                         {
-                            if (input.UseArmor)
+                            literalOut.Write(buf, 0, len);
+                            if (input.SignWithPrivateKey)
                             {
-                                using (ArmoredOutputStream armoredStream = new ArmoredOutputStream(outputStream))
-                                {
-                                    using (Stream cOut = cPk.Open(armoredStream, bytes.Length))
-                                    {
-                                        cOut.Write(bytes, 0, bytes.Length);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                using (Stream cOut = cPk.Open(outputStream, bytes.Length))
-                                {
-                                    cOut.Write(bytes, 0, bytes.Length);
-                                }
+                                signatureGenerator.Update(buf, 0, len);
                             }
                         }
+
+                        if (input.SignWithPrivateKey)
+                        {
+                            signatureGenerator.Generate().Encode(compressedOut);
+                        }
                     }
-
-                    Result ret = new Result
-                    {
-                        FilePath = input.OutputFile
-                    };
-
-                    return ret;
                 }
+
+                return new Result
+                {
+                    FilePath = input.OutputFile
+                };
             }
             catch (PgpException e)
             {
@@ -111,27 +75,124 @@ namespace FRENDS.Community.PgpEncrypt
         }
 
         /// <summary>
-        /// Return the first key we can use to encrypt.
-        /// Note: A file can contain multiple keys (stored in "key rings"), 
-        /// but we just loop through the collection till we find a key suitable for encryption, 
-        /// in the real world you would probably want to be a bit smarter about this.
+        /// Helper for getting encryption stream
         /// </summary>
-        private static PgpPublicKey ReadPublicKey(Stream inputStream)
+        /// <param name="stream">Stream to chain for encryption</param>
+        /// <param name="input">Task settings</param>
+        /// <returns>Encryption chained stream</returns>
+        private static Stream GetEncryptionStream(Stream stream, Input input)
         {
-            inputStream = PgpUtilities.GetDecoderStream(inputStream);
+            SymmetricKeyAlgorithmTag algorithmTag = input.EncryptionAlgorithm.ConvertEnum<SymmetricKeyAlgorithmTag>();
+            PgpPublicKey publicKey = ReadPublicKey(input.PublicKeyFile);
+            PgpEncryptedDataGenerator encryptedDataGenerator = new PgpEncryptedDataGenerator(algorithmTag, input.UseIntegrityCheck, new SecureRandom());
+            encryptedDataGenerator.AddMethod(publicKey);
+            return encryptedDataGenerator.Open(stream, new byte[BUFFER_SIZE]);
+        }
 
-            PgpPublicKeyRingBundle pgpPub = new PgpPublicKeyRingBundle(inputStream);
-
-            foreach (PgpPublicKeyRing kRing in pgpPub.GetKeyRings())
+        /// <summary>
+        /// Gets compression stream if compression is needed, otherwise returns original stream
+        /// </summary>
+        /// <param name="stream">Source stream</param>
+        /// <param name="input">Task input</param>
+        /// <returns>Compression chained stream or original source</returns>
+        private static Stream GetCompressionStream(Stream stream, Input input)
+        {
+            if (input.UseArmor)
             {
-                foreach (PgpPublicKey k in kRing.GetPublicKeys())
+                CompressionAlgorithmTag compressionTag = input.CompressionType.ConvertEnum<CompressionAlgorithmTag>();
+                PgpCompressedDataGenerator compressedDataGenerator = new PgpCompressedDataGenerator(compressionTag);
+                return compressedDataGenerator.Open(stream);
+            }
+            return stream;
+        }
+
+        /// <summary>
+        /// Find first suitable public key for encryption.
+        /// </summary>
+        /// <param name="publicKeyFile">Path to public key file</param>
+        /// <returns>PgpPublicKey from public key file location</returns>
+        private static PgpPublicKey ReadPublicKey(string publicKeyFile)
+        {
+            using (Stream publicKeyStream = File.OpenRead(publicKeyFile))
+            using (Stream decoderStream = PgpUtilities.GetDecoderStream(publicKeyStream))
+            {
+                PgpPublicKeyRingBundle pgpPub = new PgpPublicKeyRingBundle(decoderStream);
+
+                foreach (PgpPublicKeyRing kRing in pgpPub.GetKeyRings())
                 {
-                    if (k.IsEncryptionKey)
-                        return k;
+                    foreach (PgpPublicKey k in kRing.GetPublicKeys())
+                    {
+                        if (k.IsEncryptionKey)
+                            return k;
+                    }
                 }
             }
-
             throw new ArgumentException("Can't find encryption key in key ring.");
+        }
+
+        /// <summary>
+        /// Helper for creating a PgpSignatureGenerator from private key file and its password
+        /// </summary>
+        /// <param name="stream">Stream to use for signature initialization</param>
+        /// <param name="input">Encryption task input</param>
+        /// <returns>PgpSignatureGenerator to be used when signing a file</returns>
+        private static PgpSignatureGenerator InitPgpSignatureGenerator(Stream stream, Input input)
+        {
+            HashAlgorithmTag hashAlgorithm = input.SigningSettings.SignatureHashAlgorithm.ConvertEnum<HashAlgorithmTag>();
+
+            try
+            {
+                PgpSecretKey secretKey = ReadSecretKey(input.SigningSettings.PrivateKeyFile);
+                PgpPrivateKey privateKey = secretKey.ExtractPrivateKey(input.SigningSettings.PrivateKeyPassword.ToCharArray());
+
+                var pgpSignatureGenerator = new PgpSignatureGenerator(secretKey.PublicKey.Algorithm, hashAlgorithm);
+                pgpSignatureGenerator.InitSign(PgpSignature.BinaryDocument, privateKey);
+
+                foreach (string userId in secretKey.PublicKey.GetUserIds())
+                {
+                    PgpSignatureSubpacketGenerator spGen = new PgpSignatureSubpacketGenerator();
+                    spGen.SetSignerUserId(false, userId);
+                    pgpSignatureGenerator.SetHashedSubpackets(spGen.Generate());
+                    // Just the first one!
+                    break;
+                }
+
+                pgpSignatureGenerator.GenerateOnePassVersion(false).Encode(stream);
+                return pgpSignatureGenerator;
+            }
+            catch (PgpException e)
+            {
+                throw new Exception("Private key extraction failed, password might be incorrect", e);
+            }
+        }
+
+        /// <summary>
+        /// Reads secret key from given privateKey
+        /// </summary>
+        /// <param name="privateKeyFile">Path to private key file</param>
+        /// <returns>PgpSecretKey of the given privateKey</returns>
+        private static PgpSecretKey ReadSecretKey(string privateKeyFile)
+        {
+            PgpSecretKey secretKey = null;
+
+            using (Stream secretKeyStream = File.OpenRead(privateKeyFile))
+            {
+                var secretKeyRingBundle = new PgpSecretKeyRingBundle(PgpUtilities.GetDecoderStream(secretKeyStream));
+
+                foreach (PgpSecretKeyRing keyRing in secretKeyRingBundle.GetKeyRings())
+                {
+                    foreach (PgpSecretKey key in keyRing.GetSecretKeys())
+                    {
+                        if (key.IsSigningKey)
+                            secretKey = key;
+                    }
+                }
+
+                if (secretKey == null)
+                    throw new Exception("Wrong private key - Can't find signing key in key ring.");
+            }
+
+            return secretKey;
         }
     }
 }
