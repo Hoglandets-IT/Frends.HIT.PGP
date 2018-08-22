@@ -32,7 +32,7 @@ namespace FRENDS.Community.PgpClearTextSignature.Tests
 
             string result = File.ReadAllText(result_object.FilePath);
 
-            string expectedResult = "-----BEGINPGPSIGNEDMESSAGE-----Hash:SHA1\"Secret\"messagethatcontainskanji(漢字)totestutf-8compatibility.-----BEGINPGPSIGNATURE-----Version:BCPGC#v1.8.1.0iLkEAQECACMFAlp";
+            string expectedResult = "-----BEGINPGPSIGNEDMESSAGE-----Hash:SHA1\"Secret\"messagethatcontainskanji(漢字)totestutf-8compatibility.-----BEGINPGPSIGNATURE-----Version:BCPGC#v1.8.1.0iLkEAQECACMFAl";
             // Rest of the file is random.
 
             Assert.That(Regex.Replace(result, @"[\s+]", ""), Does.StartWith(Regex.Replace(expectedResult, @"[\s+]", "")));
