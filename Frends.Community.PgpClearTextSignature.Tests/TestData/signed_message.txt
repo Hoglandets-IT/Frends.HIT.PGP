@@ -2,13 +2,15 @@
 Hash: SHA1
 
 "Secret" message that contains kanji (漢字) to test utf-8 compatibility.
-
 -----BEGIN PGP SIGNATURE-----
 Version: BCPG C# v1.8.1.0
 
-iLkEAQECACMFAlt9TIQcHFRlc3QgS2V5IDx0ZXN0QGV4YW1wbGUuY29tPgAKCRDO
-gHlbg3uk3jj8A/9mOwJgAwtmwadnVIaFBr0g5P77+DHYZecX84kfsm2jx1vC+pTp
-nrezUW26hpD5ikLI+kmyPme3bmqL7UILZtCKFP0qMKuLDZHQFSU58io+ZHSrR+qb
-aejhdq1G5jq8G9Eq1fZBBLJEHWaGJAPulzeo08iw42JGJI82Rnc4bOCnKA==
-=TwbV
+iQE0BAEBAgAeBQJdVqZ9Fxx0ZXN0aSA8dGVzdGlAdGVzdGkuZmk+AAoJEEJq2m4f
+KLFJsd4H/1HGdAFX4SgMLJiFhgFoVL6cOBQn6ck+Rmt7/v2CkgUOCwlXh28WGTSL
+2Rpgd433nmD+tB18lV1mssLC4K1ZvbinK2/ROVrWSXQruQprrZ3fgpH06a9wxLk3
+y1JBtbnXFTgiqb4834At0XHdn4m1UkrnR0YwH7ncKjJ/beHmXjfJfemj/lQ68vgK
+CcNiXnh5+g8o2c2hWacUK9gvitT3njepgiL5UReRMGTuuXoX1CvEx8nGioJ0Mcvo
+bi3BJd2IzgDOTldctODMB/m6ZH9ICJz62D/EatHZeiG1PpyIwDQNzz1IqTwdUc8t
+mk+Z2rxM9ZHlbNPoYuxwX9LTEsrbXfo=
+=GlvI
 -----END PGP SIGNATURE-----
