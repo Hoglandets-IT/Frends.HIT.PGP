@@ -16,83 +16,86 @@ namespace FRENDS.Community.PgpVerifyClearTextSignature
         /// </summary>
         public static Result PGPVerifyClearTextSignFile(Input input)
         {
-            Stream inStr = File.OpenRead(input.InputFile);
-            ArmoredInputStream aIn = new ArmoredInputStream(inStr);
-            Stream outStr = File.Create(input.OutputFile);
-
-            //
-            // write out signed section using the local line separator.
-            // note: trailing white space needs to be removed from the end of
-            // each line RFC 4880 Section 7.1
-            //
-            MemoryStream lineOut = new MemoryStream();
-            int lookAhead = ReadInputLine(lineOut, aIn);
-            byte[] lineSep = Encoding.ASCII.GetBytes(Environment.NewLine); ;
-
-
-            if (lookAhead != -1 && aIn.IsClearText())
+            using (var inStr = File.OpenRead(input.InputFile))
+            using (var outStr = File.Create(input.OutputFile))
+            using (var keyStr = PgpUtilities.GetDecoderStream(File.OpenRead(input.PublicKeyFile)))
             {
-                byte[] line = lineOut.ToArray();
-                outStr.Write(line, 0, GetLengthWithoutSeparatorOrTrailingWhitespace(line));
-                outStr.Write(lineSep, 0, lineSep.Length);
+                ArmoredInputStream aInputStr = new ArmoredInputStream(inStr);
 
-                while (lookAhead != -1 && aIn.IsClearText())
-                {
-                    lookAhead = ReadInputLine(lineOut, lookAhead, aIn);
+                //
+                // write out signed section using the local line separator.
+                // note: trailing white space needs to be removed from the end of
+                // each line RFC 4880 Section 7.1
+                //
+                MemoryStream lineOut = new MemoryStream();
+                int lookAhead = ReadInputLine(lineOut, aInputStr);
+                byte[] lineSep = Encoding.ASCII.GetBytes(Environment.NewLine); ;
 
-                    line = lineOut.ToArray();
-                    outStr.Write(line, 0, GetLengthWithoutSeparatorOrTrailingWhitespace(line));
-                    outStr.Write(lineSep, 0, lineSep.Length);
-                }
-            }
-            else
-            {
-                // a single line file
-                if (lookAhead != -1)
+
+                if (lookAhead != -1 && aInputStr.IsClearText())
                 {
                     byte[] line = lineOut.ToArray();
                     outStr.Write(line, 0, GetLengthWithoutSeparatorOrTrailingWhitespace(line));
                     outStr.Write(lineSep, 0, lineSep.Length);
+
+                    while (lookAhead != -1 && aInputStr.IsClearText())
+                    {
+                        lookAhead = ReadInputLine(lineOut, lookAhead, aInputStr);
+
+                        line = lineOut.ToArray();
+                        outStr.Write(line, 0, GetLengthWithoutSeparatorOrTrailingWhitespace(line));
+                        outStr.Write(lineSep, 0, lineSep.Length);
+                    }
                 }
-            }
-            outStr.Close();
-
-            PgpPublicKeyRingBundle pgpRings = new PgpPublicKeyRingBundle(PgpUtilities.GetDecoderStream(File.OpenRead(input.PublicKeyFile)));
-
-            PgpObjectFactory pgpFact = new PgpObjectFactory(aIn);
-            PgpSignatureList p3 = (PgpSignatureList)pgpFact.NextPgpObject();
-            PgpSignature sig = p3[0];
-            inStr.Close();
-
-            sig.InitVerify(pgpRings.GetPublicKey(sig.KeyId));
-            // read the input, making sure we ignore the last newline.
-            Stream sigIn = File.OpenRead(input.OutputFile);
-            lookAhead = ReadInputLine(lineOut, sigIn);
-            ProcessLine(sig, lineOut.ToArray());
-            if (lookAhead != -1)
-            {
-                do
+                else
                 {
-                    lookAhead = ReadInputLine(lineOut, lookAhead, sigIn);
-
-                    sig.Update((byte)'\r');
-                    sig.Update((byte)'\n');
-
-                    ProcessLine(sig, lineOut.ToArray());
+                    // a single line file
+                    if (lookAhead != -1)
+                    {
+                        byte[] line = lineOut.ToArray();
+                        outStr.Write(line, 0, GetLengthWithoutSeparatorOrTrailingWhitespace(line));
+                        outStr.Write(lineSep, 0, lineSep.Length);
+                    }
                 }
-                while (lookAhead != -1);
+                outStr.Close();
+
+                PgpPublicKeyRingBundle pgpRings = new PgpPublicKeyRingBundle(keyStr);
+
+                PgpObjectFactory pgpFact = new PgpObjectFactory(aInputStr);
+                PgpSignatureList p3 = (PgpSignatureList)pgpFact.NextPgpObject();
+                PgpSignature sig = p3[0];
+                inStr.Close();
+
+
+                sig.InitVerify(pgpRings.GetPublicKey(sig.KeyId));
+                // read the input, making sure we ignore the last newline.
+                Stream sigIn = File.OpenRead(input.OutputFile);
+                lookAhead = ReadInputLine(lineOut, sigIn);
+                ProcessLine(sig, lineOut.ToArray());
+                if (lookAhead != -1)
+                {
+                    do
+                    {
+                        lookAhead = ReadInputLine(lineOut, lookAhead, sigIn);
+
+                        sig.Update((byte)'\r');
+                        sig.Update((byte)'\n');
+
+                        ProcessLine(sig, lineOut.ToArray());
+                    }
+                    while (lookAhead != -1);
+                }
+
+                bool verified = sig.Verify();
+                sigIn.Close();
+                Result ret = new Result
+                {
+                    FilePath = input.OutputFile,
+                    Verified = verified
+                };
+
+                return ret;
             }
-
-            bool verified = sig.Verify();
-            sigIn.Close();
-            Result ret = new Result
-            {
-                FilePath = input.OutputFile,
-                Verified = verified
-            };
-
-            return ret;
-
         }
 
         private static int ReadInputLine(MemoryStream bOut, int lookAhead, Stream fIn)
