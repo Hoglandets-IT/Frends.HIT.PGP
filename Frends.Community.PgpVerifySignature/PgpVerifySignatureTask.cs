@@ -14,63 +14,67 @@ namespace FRENDS.Community.PgpVerifySignature
         /// </summary>
         public static Result PGPVerifySignFile(Input input)
         {
-            try
-            {
-                Stream inputStream = PgpUtilities.GetDecoderStream(File.OpenRead(input.InputFile));
 
+            using (var inputStream = PgpUtilities.GetDecoderStream(File.OpenRead(input.InputFile)))
+            {
                 PgpObjectFactory pgpFact = new PgpObjectFactory(inputStream);
-                PgpOnePassSignatureList p1 = (PgpOnePassSignatureList)pgpFact.NextPgpObject();
-                PgpOnePassSignature ops = p1[0];
+                PgpOnePassSignatureList signatureList = (PgpOnePassSignatureList)pgpFact.NextPgpObject();
+                PgpOnePassSignature onePassSignature = signatureList[0];
 
                 PgpLiteralData p2 = (PgpLiteralData)pgpFact.NextPgpObject();
-                Stream dIn = p2.GetInputStream();
+                Stream dataIn = p2.GetInputStream();
                 PgpPublicKeyRingBundle pgpRing = new PgpPublicKeyRingBundle(PgpUtilities.GetDecoderStream(File.OpenRead(input.PublicKeyFile)));
-                PgpPublicKey key = pgpRing.GetPublicKey(ops.KeyId);
+                PgpPublicKey key = pgpRing.GetPublicKey(onePassSignature.KeyId);
 
-                string fosPath;
+                string outputPath;
                 if (String.IsNullOrWhiteSpace(input.OutputFolder))
                 {
-                    fosPath = Path.Combine(Path.GetDirectoryName(input.InputFile), p2.FileName);
+                    outputPath = Path.Combine(Path.GetDirectoryName(input.InputFile), p2.FileName);
                 }
                 else
                 {
-                    fosPath = Path.Combine(input.OutputFolder, p2.FileName);
+                    outputPath = Path.Combine(input.OutputFolder, p2.FileName);
                 }
-                Stream fos = File.Create(fosPath);
-
-                ops.InitVerify(key);
-
-                int ch;
-                while ((ch = dIn.ReadByte()) >= 0)
+                using (var outputStream = File.Create(outputPath))
                 {
-                    ops.Update((byte)ch);
-                    fos.WriteByte((byte)ch);
-                }
-                fos.Close();
+                    onePassSignature.InitVerify(key);
 
-                PgpSignatureList p3 = (PgpSignatureList)pgpFact.NextPgpObject();
-                PgpSignature firstSig = p3[0];
-                bool verified = ops.Verify(firstSig);
+                    int ch;
+                    while ((ch = dataIn.ReadByte()) >= 0)
+                    {
+                        onePassSignature.Update((byte)ch);
+                        outputStream.WriteByte((byte)ch);
+                    }
+                    outputStream.Close();
+                }
+
+                bool verified;
+                // Will throw Exception if file is altered
+                try
+                {
+                    PgpSignatureList p3 = (PgpSignatureList)pgpFact.NextPgpObject();
+                    PgpSignature firstSig = p3[0];
+                    verified = onePassSignature.Verify(firstSig);
+                }
+                catch (Exception)
+                {
+                    Result retError = new Result
+                    {
+                        FilePath = input.OutputFolder,
+                        Verified = false
+                    };
+
+                    return retError;
+                }
 
                 Result ret = new Result
                 {
-                    FilePath = fosPath,
+                    FilePath = outputPath,
                     Verified = verified
                 };
 
                 return ret;
             }
-            catch (Exception e)
-            {
-                Result ret = new Result
-                {
-                    FilePath = input.OutputFolder,
-                    Verified = false
-                };
-
-                return ret;
-            }
-
         }
     }
 }

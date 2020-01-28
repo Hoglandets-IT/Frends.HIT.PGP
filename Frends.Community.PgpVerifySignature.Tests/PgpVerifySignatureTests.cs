@@ -16,7 +16,7 @@ namespace FRENDS.Community.PgpVerifySignature.Tests
         [Test]
         public void VerifySignOneFileSha1()
         {
-            Input input = new Input
+            var input = new Input
             {
                 InputFile = signature,
                 PublicKeyFile = public_key_path,
