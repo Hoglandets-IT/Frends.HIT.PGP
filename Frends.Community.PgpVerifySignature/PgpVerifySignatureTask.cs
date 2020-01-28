@@ -16,6 +16,7 @@ namespace FRENDS.Community.PgpVerifySignature
         {
 
             using (var inputStream = PgpUtilities.GetDecoderStream(File.OpenRead(input.InputFile)))
+            using (var keyStream = PgpUtilities.GetDecoderStream(File.OpenRead(input.PublicKeyFile)))
             {
                 PgpObjectFactory pgpFact = new PgpObjectFactory(inputStream);
                 PgpOnePassSignatureList signatureList = (PgpOnePassSignatureList)pgpFact.NextPgpObject();
@@ -23,7 +24,7 @@ namespace FRENDS.Community.PgpVerifySignature
 
                 PgpLiteralData p2 = (PgpLiteralData)pgpFact.NextPgpObject();
                 Stream dataIn = p2.GetInputStream();
-                PgpPublicKeyRingBundle pgpRing = new PgpPublicKeyRingBundle(PgpUtilities.GetDecoderStream(File.OpenRead(input.PublicKeyFile)));
+                PgpPublicKeyRingBundle pgpRing = new PgpPublicKeyRingBundle(keyStream);
                 PgpPublicKey key = pgpRing.GetPublicKey(onePassSignature.KeyId);
 
                 string outputPath;
