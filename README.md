@@ -1,16 +1,38 @@
 - [Frends.Community.PgpVerifySignature](#Frends.Community.PgpVerifySignature)
-   - [Installing](#installing)
-   - [Building](#building)
-   - [Contributing](#contributing)
    - [Documentation](#documentation)
       - [PgpVerifySignature](#convertExcelFile)
 		 - [Input](#input)
 		 - [Options](#options)
 		 - [Result](#result)
    - [License](#license)
+   - [Installing](#installing)
+   - [Building](#building)
+   - [Contributing](#contributing)
        
 # Frends.Community.PgpVerifySignature
 This repository contais FRENDS4 Community Task to verify PGP signed message. 
+
+## Documentation
+
+### PgpVerifySignature
+
+Verifies files signed with PGP signature.
+
+#### Input
+| Property  | Type  | Description |Example|
+|-----------|-------|-------------|-------|
+| InputFile  | string | Path to file to verify. | `C:\temp\message.txt`
+| OutputFolder  | string | Folder where the verified file will be created. If empty, file will be created to same folder as InputFile. | `C:\temp\`
+| PublicKeyFile  | string | Path to public key used to verify the file. 	 | `C:\temp\publicKey.asc`
+
+#### Result
+| Property  | Type  | Description |Example|
+|-----------|-------|-------------|-------|
+| FilePath | string  | Path to verified file. | `C:\temp\original_message.txt`
+| Verified | bool  | true if verification is succesfull | false
+
+## License
+This project is licensed under the MIT License - see the LICENSE file for details
 
 ## Installing
 You can install the task via Frends UI Task view or you can find the nuget package from the following nuget feed
@@ -47,25 +69,3 @@ When contributing to this repository, please first discuss the change you wish t
 5. Submit a Pull request so that we can review your changes
 
 NOTE: Be sure to merge the latest from "upstream" before making a pull request!
-
-## Documentation
-
-### PgpVerifySignature
-
-Verifies files signed with PGP signature.
-
-#### Input
-| Property  | Type  | Description |Example|
-|-----------|-------|-------------|-------|
-| InputFile  | string | Path to file to verify. | `C:\temp\message.txt`
-| OutputFolder  | string | Folder where the verified file will be created. If empty, file will be created to same folder as InputFile. | `C:\temp\`
-| PublicKeyFile  | string | Path to public key used to verify the file. 	 | `C:\temp\publicKey.asc`
-
-#### Result
-| Property  | Type  | Description |Example|
-|-----------|-------|-------------|-------|
-| FilePath | string  | Path to verified file. | `C:\temp\original_message.txt`
-| Verified | bool  | true if verification is succesfull | false
-
-## License
-This project is licensed under the MIT License - see the LICENSE file for details
