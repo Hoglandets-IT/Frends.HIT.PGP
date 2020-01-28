@@ -69,25 +69,28 @@ namespace FRENDS.Community.PgpVerifyClearTextSignature
 
                 sig.InitVerify(pgpRings.GetPublicKey(sig.KeyId));
                 // read the input, making sure we ignore the last newline.
-                Stream sigIn = File.OpenRead(input.OutputFile);
-                lookAhead = ReadInputLine(lineOut, sigIn);
-                ProcessLine(sig, lineOut.ToArray());
-                if (lookAhead != -1)
+                bool verified = false;
+                using (var sigIn = File.OpenRead(input.OutputFile))
                 {
-                    do
+                    lookAhead = ReadInputLine(lineOut, sigIn);
+                    ProcessLine(sig, lineOut.ToArray());
+                    if (lookAhead != -1)
                     {
-                        lookAhead = ReadInputLine(lineOut, lookAhead, sigIn);
+                        do
+                        {
+                            lookAhead = ReadInputLine(lineOut, lookAhead, sigIn);
 
-                        sig.Update((byte)'\r');
-                        sig.Update((byte)'\n');
+                            sig.Update((byte)'\r');
+                            sig.Update((byte)'\n');
 
-                        ProcessLine(sig, lineOut.ToArray());
+                            ProcessLine(sig, lineOut.ToArray());
+                        }
+                        while (lookAhead != -1);
                     }
-                    while (lookAhead != -1);
-                }
 
-                bool verified = sig.Verify();
-                sigIn.Close();
+                    verified = sig.Verify();
+                    sigIn.Close();
+                }
                 Result ret = new Result
                 {
                     FilePath = input.OutputFile,

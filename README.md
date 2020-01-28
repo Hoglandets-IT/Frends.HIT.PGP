@@ -1,16 +1,38 @@
 - [Frends.Community.PgpClearTextSignature](#Frends.Community.PgpClearTextSignature)
-   - [Installing](#installing)
-   - [Building](#building)
-   - [Contributing](#contributing)
    - [Documentation](#documentation)
       - [PgpClearTextSignature](#convertExcelFile)
 		 - [Input](#input)
 		 - [Options](#options)
 		 - [Result](#result)
    - [License](#license)
+   - [Installing](#installing)
+   - [Building](#building)
+   - [Contributing](#contributing)
        
 # Frends.Community.PgpVerifyClearTextSignature
 This repository contais FRENDS4 Community Task to verify a PGP signature at the end of text file. 
+
+## Documentation
+
+### PgpVerifyClearTextSignature
+
+Verifies text files signed with PGP clear text signature.
+
+#### Input
+| Property  | Type  | Description |Example|
+|-----------|-------|-------------|-------|
+| InputFile  | string | Path to file to verify. | `C:\temp\message.txt`
+| OutputFile  | string | Path to file that will be created. | `C:\temp\message_out.txt`
+| PublicKeyFile  | string | Path to public key used to verify the file. 	 | `C:\temp\publicKey.asc`
+
+#### Result
+| Property  | Type  | Description |Example|
+|-----------|-------|-------------|-------|
+| FilePath | string  | Path to verified file. Note: this is same path that was given as input parameter OutputFile. Copying that path to result will enable easy references in Frends, such as #result[PgpVerifyClearTextSignature].FilePath | `C:\temp\message_out.txt`
+| Verified | bool  | true if verification is succesfull | true
+
+## License
+This project is licensed under the MIT License - see the LICENSE file for details
 
 ## Installing
 You can install the task via Frends UI Task view or you can find the nuget package from the following nuget feed
@@ -47,25 +69,3 @@ When contributing to this repository, please first discuss the change you wish t
 5. Submit a Pull request so that we can review your changes
 
 NOTE: Be sure to merge the latest from "upstream" before making a pull request!
-
-## Documentation
-
-### PgpVerifyClearTextSignature
-
-Verifies text files signed with PGP clear text signature.
-
-#### Input
-| Property  | Type  | Description |Example|
-|-----------|-------|-------------|-------|
-| InputFile  | string | Path to file to verify. | `C:\temp\message.txt`
-| OutputFile  | string | Path to file that will be created. | `C:\temp\message_out.txt`
-| PublicKeyFile  | string | Path to public key used to verify the file. 	 | `C:\temp\publicKey.asc`
-
-#### Result
-| Property  | Type  | Description |Example|
-|-----------|-------|-------------|-------|
-| FilePath | string  | Path to verified file. Note: this is same path that was given as input parameter OutputFile. Copying that path to result will enable easy references in Frends, such as #result[PgpVerifyClearTextSignature].FilePath | `C:\temp\message_out.txt`
-| Verified | bool  | true if verification is succesfull | true
-
-## License
-This project is licensed under the MIT License - see the LICENSE file for details
