@@ -15,80 +15,57 @@ namespace FRENDS.Community.PgpSignature
         /// </summary>
         public static Result PGPSignFile(Input input)
         {
-            HashAlgorithmTag digest;
-            if (input.HashFunction == HashFunctionType.MD5)
-            {
-                digest = HashAlgorithmTag.MD5;
-            }
-            else if (input.HashFunction == HashFunctionType.RipeMD160)
-            {
-                digest = HashAlgorithmTag.RipeMD160;
-            }
-            else if (input.HashFunction == HashFunctionType.Sha1)
-            {
-                digest = HashAlgorithmTag.Sha1;
-            }
-            else if (input.HashFunction == HashFunctionType.Sha224)
-            {
-                digest = HashAlgorithmTag.Sha224;
-            }
-            else if (input.HashFunction == HashFunctionType.Sha384)
-            {
-                digest = HashAlgorithmTag.Sha384;
-            }
-            else if (input.HashFunction == HashFunctionType.Sha512)
-            {
-                digest = HashAlgorithmTag.Sha512;
-            }
-            else
-            {
-                digest = HashAlgorithmTag.Sha256;
-            }
+            HashAlgorithmTag digest = input.HashFunction.ConvertEnum<HashAlgorithmTag>();
 
-
-            Stream privateKeyStream = File.OpenRead(input.PrivateKeyFile);
-            PgpSecretKey pgpSecKey = ReadSecretKey(privateKeyStream);
-            PgpPrivateKey pgpPrivKey = pgpSecKey.ExtractPrivateKey(input.Password.ToCharArray());
-            PgpSignatureGenerator sGen = new PgpSignatureGenerator(pgpSecKey.PublicKey.Algorithm, digest);
-            PgpSignatureSubpacketGenerator spGen = new PgpSignatureSubpacketGenerator();
-
-            sGen.InitSign(Org.BouncyCastle.Bcpg.OpenPgp.PgpSignature.BinaryDocument, pgpPrivKey);
-
-            IEnumerator enumerator = pgpSecKey.PublicKey.GetUserIds().GetEnumerator();
-            if (enumerator.MoveNext())
+            using (var privateKeyStream = File.OpenRead(input.PrivateKeyFile))
             {
-                spGen.SetSignerUserId(false, (string)enumerator.Current);
-                sGen.SetHashedSubpackets(spGen.Generate());
+                PgpSecretKey pgpSecKey = ReadSecretKey(privateKeyStream);
+                PgpPrivateKey pgpPrivKey = pgpSecKey.ExtractPrivateKey(input.Password.ToCharArray());
+                PgpSignatureGenerator signatureGenerator = new PgpSignatureGenerator(pgpSecKey.PublicKey.Algorithm, digest);
+                PgpSignatureSubpacketGenerator signatureSubpacketGenerator = new PgpSignatureSubpacketGenerator();
+
+                signatureGenerator.InitSign(Org.BouncyCastle.Bcpg.OpenPgp.PgpSignature.BinaryDocument, pgpPrivKey);
+
+                IEnumerator enumerator = pgpSecKey.PublicKey.GetUserIds().GetEnumerator();
+                if (enumerator.MoveNext())
+                {
+                    signatureSubpacketGenerator.SetSignerUserId(false, (string)enumerator.Current);
+                    signatureGenerator.SetHashedSubpackets(signatureSubpacketGenerator.Generate());
+                }
+
+                using (var outputStream = File.Create(input.OutputFile))
+                {
+                    ArmoredOutputStream armoredOutputStream = new ArmoredOutputStream(outputStream);
+                    BcpgOutputStream bcbgOutputStream = new BcpgOutputStream(armoredOutputStream);
+                    signatureGenerator.GenerateOnePassVersion(false).Encode(bcbgOutputStream);
+
+                    FileInfo file = new FileInfo(input.InputFile);
+                    PgpLiteralDataGenerator literalDataGenerator = new PgpLiteralDataGenerator();
+                    Stream literalDataOut = literalDataGenerator.Open(bcbgOutputStream, PgpLiteralData.Binary, file);
+                    using (var fileIn = file.OpenRead())
+                    {
+                        int ch;
+
+                        while ((ch = fileIn.ReadByte()) >= 0)
+                        {
+                            literalDataOut.WriteByte((byte)ch);
+                            signatureGenerator.Update((byte)ch);
+                        }
+
+                        fileIn.Close();
+                        literalDataGenerator.Close();
+                        signatureGenerator.Generate().Encode(bcbgOutputStream);
+                        armoredOutputStream.Close();
+                        outputStream.Close();
+
+                        Result ret = new Result
+                        {
+                            FilePath = input.OutputFile
+                        };
+                        return ret;
+                    }
+                }
             }
-
-            Stream outputStream = File.Create(input.OutputFile);
-            ArmoredOutputStream armoredOutputStream = new ArmoredOutputStream(outputStream);
-            BcpgOutputStream bOut = new BcpgOutputStream(armoredOutputStream);
-            sGen.GenerateOnePassVersion(false).Encode(bOut);
-
-            FileInfo file = new FileInfo(input.InputFile);
-            PgpLiteralDataGenerator lGen = new PgpLiteralDataGenerator();
-            Stream lOut = lGen.Open(bOut, PgpLiteralData.Binary, file);
-            FileStream fIn = file.OpenRead();
-            int ch;
-
-            while ((ch = fIn.ReadByte()) >= 0)
-            {
-                lOut.WriteByte((byte)ch);
-                sGen.Update((byte)ch);
-            }
-
-            fIn.Close();
-            lGen.Close();
-            sGen.Generate().Encode(bOut);
-            armoredOutputStream.Close();
-            outputStream.Close();
-
-            Result ret = new Result
-            {
-                FilePath = input.OutputFile
-            };
-            return ret;
         }
 
 
