@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+	<metadata>
+		<id>Frends.Community.PgpVerifyClearTextSignature</id>
+		<version>0.0.2</version>
+		<title>Frends Community PgpVerifyClearTextSignature</title>
+		<authors>HiQ Finland</authors>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<description>Create PGP signature.</description>
+		<summary />
+		<dependencies>
+			<dependency id="BouncyCastle" version="1.8.1" />
+		</dependencies>
+		<frameworkAssemblies>
+			<frameworkAssembly assemblyName="System" />
+		</frameworkAssemblies>
+		<releaseNotes>Fixed nuspec</releaseNotes>
+	</metadata>
+	<files>
+		<file src="..\Frends.Community.PgpVerifyClearTextSignature\bin\release\Frends.Community.PgpVerifyClearTextSignature.dll" target="lib\net45\Frends.Community.PgpVerifyClearTextSignature.dll" />
+		<file src="..\Frends.Community.PgpVerifyClearTextSignature\bin\release\Frends.Community.PgpVerifyClearTextSignature.XML" target="lib\net45\Frends.Community.PgpVerifyClearTextSignature.XML" />
+	</files>
+</package>
