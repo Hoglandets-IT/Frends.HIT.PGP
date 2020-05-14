@@ -53,9 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="TestData\sec.asc">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <None Include="TestData\dontuse-sec.asc" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Frends.Community.PgpClearTextSignature\Frends.Community.PgpClearTextSignature.csproj">
