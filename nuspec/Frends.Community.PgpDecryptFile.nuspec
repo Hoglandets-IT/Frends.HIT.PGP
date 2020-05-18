@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+	<metadata>
+		<id>Frends.Community.PgpDecryptFile</id>
+		<version>1.0.0</version>
+		<title>Frends Community PgpDecrypt</title>
+		<authors>HiQ Finland</authors>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<description>Decrypt a given file using PGP.</description>
+      <summary />
+		<dependencies>
+			<dependency id="Frends.Tasks.Attributes" version="1.2.0" />
+      <dependency id="BouncyCastle" version="1.8.1" />
+    </dependencies>
+		<frameworkAssemblies>
+			<frameworkAssembly assemblyName="System" />
+		</frameworkAssemblies>
+    <releaseNotes>Initial release</releaseNotes>
+  </metadata>
+	<files>
+		<file src="..\Frends.Community.PgpDecryptFile\bin\release\Frends.Community.PgpDecryptFile.dll" target="lib\net45\Frends.Community.PgpDecryptFile.dll" />
+		<file src="..\Frends.Community.PgpDecryptFile\bin\release\Frends.Community.PgpDecryptFile.XML" target="lib\net45\Frends.Community.PgpDecryptFile.XML" />
+	</files>
+</package>
