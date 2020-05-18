@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+	<metadata>
+		<id>Frends.Community.PgpClearTextSignature</id>
+		<version>1.0.1</version>
+		<title>Frends Community PgpClearTextSignature</title>
+		<authors>HiQ Finland</authors>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<description>Add PGP signature at the end of text file.</description>
+		<summary />
+		<dependencies>
+			<dependency id="Frends.Tasks.Attributes" version="1.2.0" />
+      <dependency id="BouncyCastle" version="1.8.1" />
+    </dependencies>
+		<frameworkAssemblies>
+			<frameworkAssembly assemblyName="System" />
+		</frameworkAssemblies>
+    <releaseNotes>Fixed nuspec</releaseNotes>
+  </metadata>
+	<files>
+		<file src="..\Frends.Community.PgpClearTextSignature\bin\release\Frends.Community.PgpClearTextSignature.dll" target="lib\net45\Frends.Community.PgpClearTextSignature.dll" />
+		<file src="..\Frends.Community.PgpClearTextSignature\bin\release\Frends.Community.PgpClearTextSignature.XML" target="lib\net45\Frends.Community.PgpClearTextSignature.XML" />
+	</files>
+</package>
