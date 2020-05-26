@@ -1,0 +1,70 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net471</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Frends.Community.PgpClearTextSignature\**" />
+    <Compile Remove="Frends.Community.PgpDecryptFile\**" />
+    <Compile Remove="Frends.Community.PgpEncryptFile\**" />
+    <Compile Remove="Frends.Community.PgpSignature\**" />
+    <Compile Remove="Frends.Community.PgpVerifyClearTextSignature\**" />
+    <Compile Remove="Frends.Community.PgpVerifySignature\**" />
+    <Compile Remove="PgpClearTextSignatureHide\**" />
+    <Compile Remove="PgpDecryptFileHide\**" />
+    <Compile Remove="PgpEncryptFileHide\**" />
+    <Compile Remove="PgpSignatureHide\**" />
+    <Compile Remove="PgpVerifyClearTextSignatureHide\**" />
+    <Compile Remove="PgpVerifySignatureHide\**" />
+    <EmbeddedResource Remove="Frends.Community.PgpClearTextSignature\**" />
+    <EmbeddedResource Remove="Frends.Community.PgpDecryptFile\**" />
+    <EmbeddedResource Remove="Frends.Community.PgpEncryptFile\**" />
+    <EmbeddedResource Remove="Frends.Community.PgpSignature\**" />
+    <EmbeddedResource Remove="Frends.Community.PgpVerifyClearTextSignature\**" />
+    <EmbeddedResource Remove="Frends.Community.PgpVerifySignature\**" />
+    <EmbeddedResource Remove="PgpClearTextSignatureHide\**" />
+    <EmbeddedResource Remove="PgpDecryptFileHide\**" />
+    <EmbeddedResource Remove="PgpEncryptFileHide\**" />
+    <EmbeddedResource Remove="PgpSignatureHide\**" />
+    <EmbeddedResource Remove="PgpVerifyClearTextSignatureHide\**" />
+    <EmbeddedResource Remove="PgpVerifySignatureHide\**" />
+    <None Remove="Frends.Community.PgpClearTextSignature\**" />
+    <None Remove="Frends.Community.PgpDecryptFile\**" />
+    <None Remove="Frends.Community.PgpEncryptFile\**" />
+    <None Remove="Frends.Community.PgpSignature\**" />
+    <None Remove="Frends.Community.PgpVerifyClearTextSignature\**" />
+    <None Remove="Frends.Community.PgpVerifySignature\**" />
+    <None Remove="PgpClearTextSignatureHide\**" />
+    <None Remove="PgpDecryptFileHide\**" />
+    <None Remove="PgpEncryptFileHide\**" />
+    <None Remove="PgpSignatureHide\**" />
+    <None Remove="PgpVerifyClearTextSignatureHide\**" />
+    <None Remove="PgpVerifySignatureHide\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove=".gitattributes" />
+    <None Remove=".gitignore" />
+    <None Remove="FrendsTaskMetadata.json" />
+    <None Remove="LICENSE" />
+    <None Remove="README.md" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BouncyCastle" Version="1.8.6.1" />
+    <PackageReference Include="nunit" Version="3.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.16.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Frends.Community.Pgp\Frends.Community.Pgp.csproj" />
+  </ItemGroup>
+
+</Project>

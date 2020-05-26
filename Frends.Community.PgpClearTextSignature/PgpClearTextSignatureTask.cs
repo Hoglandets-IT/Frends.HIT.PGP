@@ -52,7 +52,7 @@ namespace FRENDS.Community.PgpClearTextSignature
             PgpSignatureGenerator sGen = new PgpSignatureGenerator(pgpSecKey.PublicKey.Algorithm, digest);
             PgpSignatureSubpacketGenerator spGen = new PgpSignatureSubpacketGenerator();
 
-            sGen.InitSign(PgpSignature.CanonicalTextDocument, pgpPrivKey);
+            sGen.InitSign(Org.BouncyCastle.Bcpg.OpenPgp.PgpSignature.CanonicalTextDocument, pgpPrivKey);
 
             IEnumerator enumerator = pgpSecKey.PublicKey.GetUserIds().GetEnumerator();
             if (enumerator.MoveNext())

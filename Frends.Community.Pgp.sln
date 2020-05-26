@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29613.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{78F7F22E-6E20-4BCE-8362-0C558568B729}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Frends.Community.Pgp", "Frends.Community.Pgp.csproj", "{E387930F-06AE-40E2-A512-136671CBFF62}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Frends.Community.Pgp.Tests", "Frends.Community.Pgp.Tests.csproj", "{00513BE3-B91B-451C-A373-6DDD16368D55}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E387930F-06AE-40E2-A512-136671CBFF62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E387930F-06AE-40E2-A512-136671CBFF62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E387930F-06AE-40E2-A512-136671CBFF62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E387930F-06AE-40E2-A512-136671CBFF62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00513BE3-B91B-451C-A373-6DDD16368D55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00513BE3-B91B-451C-A373-6DDD16368D55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00513BE3-B91B-451C-A373-6DDD16368D55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00513BE3-B91B-451C-A373-6DDD16368D55}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {55BC6629-85C9-48D8-8CA2-B0046AF1AF4B}
+	EndGlobalSection
+EndGlobal

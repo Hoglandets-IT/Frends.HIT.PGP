@@ -54,7 +54,7 @@ namespace FRENDS.Community.PgpVerifySignature
                 try
                 {
                     PgpSignatureList p3 = (PgpSignatureList)pgpFact.NextPgpObject();
-                    PgpSignature firstSig = p3[0];
+                    Org.BouncyCastle.Bcpg.OpenPgp.PgpSignature firstSig = p3[0];
                     verified = onePassSignature.Verify(firstSig);
                 }
                 catch (Exception)

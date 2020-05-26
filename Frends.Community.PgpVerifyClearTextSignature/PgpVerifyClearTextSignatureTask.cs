@@ -63,7 +63,7 @@ namespace FRENDS.Community.PgpVerifyClearTextSignature
 
                 PgpObjectFactory pgpFact = new PgpObjectFactory(aInputStr);
                 PgpSignatureList p3 = (PgpSignatureList)pgpFact.NextPgpObject();
-                PgpSignature sig = p3[0];
+                Org.BouncyCastle.Bcpg.OpenPgp.PgpSignature sig = p3[0];
                 inStr.Close();
 
 
@@ -180,7 +180,7 @@ namespace FRENDS.Community.PgpVerifyClearTextSignature
             return b == '\r' || b == '\n';
         }
 
-        private static void ProcessLine(PgpSignature sig, byte[] line)
+        private static void ProcessLine(Org.BouncyCastle.Bcpg.OpenPgp.PgpSignature sig, byte[] line)
         {
             // note: trailing white space needs to be removed from the end of
             // each line for signature calculation RFC 4880 Section 7.1

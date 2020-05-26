@@ -1,6 +1,6 @@
 ﻿
 using System.ComponentModel;
-using Frends.Tasks.Attributes;
+using System.ComponentModel.DataAnnotations;
 
 #pragma warning disable 1591
 
@@ -12,19 +12,19 @@ namespace FRENDS.Community.PgpClearTextSignature
         /// Path to file being signed.
         /// </summary>
         [DefaultValue(@"C:\temp\message.txt")]
-        [DefaultDisplayType(DisplayType.Text)]
+        [DisplayFormat(DataFormatString = "Text")]
         public string InputFile { get; set; }
         /// <summary>
         /// Path to signed file that will be created.
         /// </summary>
         [DefaultValue(@"C:\temp\encryptedFile.pgp")]
-        [DefaultDisplayType(DisplayType.Text)]
+        [DisplayFormat(DataFormatString = "Text")]
         public string OutputFile { get; set; }
         /// <summary>
         /// Path to private key file.
         /// </summary>
         [DefaultValue(@"C:\temp\publicKey.asc")]
-        [DefaultDisplayType(DisplayType.Text)]
+        [DisplayFormat(DataFormatString = "Text")]
         public string PrivateKeyFile { get; set; }
         /// <summary>
         /// Password attached to private key.
