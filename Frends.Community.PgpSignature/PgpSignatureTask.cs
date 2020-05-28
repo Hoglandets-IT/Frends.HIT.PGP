@@ -41,7 +41,7 @@ namespace FRENDS.Community.PgpSignature
 
                     FileInfo file = new FileInfo(input.InputFile);
                     PgpLiteralDataGenerator literalDataGenerator = new PgpLiteralDataGenerator();
-                    Stream literalDataOut = literalDataGenerator.Open(bcbgOutputStream, PgpLiteralData.Binary, file);
+                    Stream literalDataOut = literalDataGenerator.Open(bcbgOutputStream, PgpLiteralData.Binary, file.Name, file.Length, DateTime.Now);
                     using (var fileIn = file.OpenRead())
                     {
                         int ch;

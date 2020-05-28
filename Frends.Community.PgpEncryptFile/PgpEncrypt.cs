@@ -42,7 +42,8 @@ namespace Frends.Community.PgpEncrypt
 
                     // writing to configured output
                     PgpLiteralDataGenerator literalDataGenerator = new PgpLiteralDataGenerator();
-                    using (Stream literalOut = literalDataGenerator.Open(compressedOut, PgpLiteralData.Binary, new FileInfo(input.InputFile)))
+                    FileInfo file = new FileInfo(input.InputFile);
+                    using (Stream literalOut = literalDataGenerator.Open(compressedOut, PgpLiteralData.Binary, file.Name, file.Length, DateTime.Now))
                     using (FileStream inputStream = inputFile.OpenRead())
                     {
                         byte[] buf = new byte[BUFFER_SIZE];

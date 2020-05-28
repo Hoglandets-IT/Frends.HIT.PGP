@@ -7,7 +7,7 @@ using System.IO;
 namespace FRENDS.Community.PgpVerifySignature
 {
 
-    public class PgpVerifySignatureTask
+    public static class PgpVerifySignatureTask
     {
         /// <summary>
         /// Verifies a PGP signature. See documentation at https://github.com/CommunityHiQ/Frends.Community.PgpVerifySignature Returns: Object {string FilePath, Boolean Verified}

@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	<TargetFrameworks>net471</TargetFrameworks>
+	<TargetFrameworks>netstandard2.0;net471</TargetFrameworks>
+	 <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
     <description>This is template task.</description>
     <authors>HiQ Finland</authors>
     <copyright>HiQ Finland</copyright>
@@ -61,7 +62,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="BouncyCastle" Version="1.8.6.1" />
+    <PackageReference Include="BouncyCastle.NetCore" Version="1.8.6" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
   </ItemGroup>
 
