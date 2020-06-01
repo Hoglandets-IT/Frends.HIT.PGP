@@ -1,0 +1,16 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+"Secret" message that contains kanji (漢字) to test utf-8 compatibility.
+-----BEGIN PGP SIGNATURE-----
+Version: BCPG C# v1.8.6.0
+
+iQE0BAEBAgAeBQJe0LQAFxx0ZXN0aSA8dGVzdGlAdGVzdGkuZmk+AAoJEEJq2m4f
+KLFJW5gH/jtBJgKf4KD9pqcQcqsibY/ntay2AeK7a6NT3wqG/vtfSzWqrkYGx+tu
+6aSS+wQdOdhxLAEWvDD8Lell3J2EqqTwLzNFkDJ3WwAk+IxN0ptZcRp6KqLXI4ue
+ndrr3qVNpTxx3jLD3avKfqZYtwW44PzPT/CFTFe88irDYzQmyzFHz+Os6HZ7pwIX
+eRhomC3PhHXlI6hlIjLjNTGj3HcJlK0v5ShJ5ThTX1ZILiXPP+1s5alGRkGD3BPC
+H4vluMQQ863OhRoewmEOphNSEdLCaGyvFoKlMpu9rLoA6RiPfRhG35Qg6QVorfeL
+/ic9wKT8NOm+M9KPBLzvN/mPnZNhfrg=
+=jDP2
+-----END PGP SIGNATURE-----

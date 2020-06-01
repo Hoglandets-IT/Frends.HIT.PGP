@@ -9,12 +9,12 @@ namespace Frends.Community.PgpEncrypt.Tests
     class PgpTests
     {
         // following keys should not be used on anything except testing as both private key and password are on public GitHub repository 
-        private readonly static string _solutionDir = Path.GetDirectoryName(Path.GetDirectoryName(TestContext.CurrentContext.TestDirectory));
+        private readonly static string _solutionDir = "Frends.Community.PgpEncryptFile.Tests";
         private readonly static string public_key_path = _solutionDir + @"\TestData\pub.asc";
         private readonly static string message_path = _solutionDir + @"\TestData\original_message.txt";
         private readonly static string encrypted_message = _solutionDir + @"\TestData\encrypted_message.pgp";
 
-        private readonly string _privateKey = AppDomain.CurrentDomain.BaseDirectory + @"\TestData\privatekey.gpg";
+        private readonly string _privateKey = @"Frends.Community.PgpEncryptFile.Tests\TestData\privatekey.gpg";
         private readonly string _privateKeyPassword = "veijo666";
         
         [TearDown]
@@ -112,7 +112,7 @@ hIwDzoB5W4N7pN4B", textResult);
             string textResult = File.ReadAllText(taskResult.FilePath);
             
             // result has to start with pgp prefix, version comment and almost static 16 chars
-            StringAssert.IsMatch(@"^-----BEGIN PGP MESSAGE-----\s{2}Version: BCPG C# v1.8.1.0\s{4}hI(s|w)DzoB5W4N7pN4B", textResult);
+            StringAssert.IsMatch(@"^-----BEGIN PGP MESSAGE-----\s{2}Version: BCPG C# v1.8.1.0\s{4}hI(s|w)DzoB5W4N7pN4B*", textResult);
             StringAssert.EndsWith($"-----END PGP MESSAGE-----{Environment.NewLine}", textResult);
         }
 

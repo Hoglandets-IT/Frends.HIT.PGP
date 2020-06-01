@@ -36,6 +36,7 @@ namespace FRENDS.Community.PgpSignature
                 using (var outputStream = File.Create(input.OutputFile))
                 {
                     ArmoredOutputStream armoredOutputStream = new ArmoredOutputStream(outputStream);
+                    // armoredOutputStream.SetHeader("Version", "BCPG C# v1.8.1.0");
                     BcpgOutputStream bcbgOutputStream = new BcpgOutputStream(armoredOutputStream);
                     signatureGenerator.GenerateOnePassVersion(false).Encode(bcbgOutputStream);
 

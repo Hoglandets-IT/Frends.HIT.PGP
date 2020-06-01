@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using System;
 using System.IO;
 using System.Text.RegularExpressions;
 
@@ -9,7 +10,9 @@ namespace FRENDS.Community.PgpDecrypt.Tests
     class PgpTests
     {
         // following keys should not be used on anything except testing as both private key and password are on public GitHub repository 
-        private readonly static string _solutionDir = Path.GetDirectoryName(Path.GetDirectoryName(TestContext.CurrentContext.TestDirectory));
+        //private readonly static string _solutionDir = Path.GetDirectoryName(Path.GetDirectoryName(TestContext.CurrentContext.TestDirectory));
+        //AppDomain.CurrentDomain.SetupInformation.ApplicationBase
+        private readonly static string _solutionDir = "Frends.Community.PgpDecryptFile.Tests";
         private readonly static string private_key_path = _solutionDir + @"\TestData\sec.asc";
         private readonly static string encrypted_message = _solutionDir + @"\TestData\encrypted_message.pgp";
         private readonly static string decrypted_message = _solutionDir + @"\TestData\decrypted_message.pgp";

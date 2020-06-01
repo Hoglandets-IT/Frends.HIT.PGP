@@ -4,15 +4,15 @@ using System.Text.RegularExpressions;
 
 
 
-namespace FRENDS.Community.PgpClearTextSignature.Tests
+namespace FRENDS.Community.PgpSignature.Tests
 {
     [TestFixture]
     class PgpTests
     {
         // following keys should not be used on anything except testing as both private key and password are on public GitHub repository 
-        private readonly static string _solutionDir = Path.GetDirectoryName(Path.GetDirectoryName(TestContext.CurrentContext.TestDirectory));
+        private readonly static string _solutionDir = "Frends.Community.PgpSignature.Tests";
         private readonly static string private_key_path = _solutionDir + @"\TestData\dontuse-sec.asc";
-        private readonly static string signed_message = _solutionDir + @"\TestData\signed_message.txt";
+        private readonly static string signature = _solutionDir + @"\TestData\signature.txt";
         private readonly static string message_path = _solutionDir + @"\TestData\original_message.txt";
         private readonly static string key_password = "testisalasana1";
 
@@ -22,17 +22,17 @@ namespace FRENDS.Community.PgpClearTextSignature.Tests
             Input input = new Input
             {
                 InputFile = message_path,
-                OutputFile = signed_message,
+                OutputFile = signature,
                 PrivateKeyFile = private_key_path,
                 Password = key_password,
                 HashFunction = HashFunctionType.Sha1,
             };
 
-            Result result_object = PgpClearTextSignatureTask.PGPClearTextSignFile(input);
+            Result result_object = PgpSignatureTask.PGPSignFile(input);
 
             string result = File.ReadAllText(result_object.FilePath);
 
-            string expectedResult = "-----BEGINPGPSIGNEDMESSAGE-----Hash:SHA1\"Secret\"messagethatcontainskanji(漢字)totestutf-8compatibility.-----BEGINPGPSIGNATURE-----Version:BCPGC#v1.8.1.0iQE0BAEBAgAeBQ";
+            string expectedResult = "-----BEGINPGPMESSAGE-----Version:BCPGC#v1.8.1.0kA0DAAIBQmrabh8os";
             // Rest of the file is random.
 
             Assert.That(Regex.Replace(result, @"[\s+]", ""), Does.StartWith(Regex.Replace(expectedResult, @"[\s+]", "")));

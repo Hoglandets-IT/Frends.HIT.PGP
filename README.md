@@ -4,9 +4,28 @@ FRENDS Community Task for PgpTasks
 
 [![Actions Status](https://github.com/CommunityHiQ/Frends.Community.Pgp/workflows/PackAndPushAfterMerge/badge.svg)](https://github.com/CommunityHiQ/Frends.Community.Pgp/actions) ![MyGet](https://img.shields.io/myget/frends-community/v/Frends.Community.Pgp) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) 
 
+- [Frends.Community.Pgp](#frendscommunitypgp)
 - [Installing](#installing)
 - [Tasks](#tasks)
-     - [PgpTasks](#PgpTasks)
+    + [PgpEncryptFile](#pgpencryptfile)
+      - [Input](#input)
+      - [Signing settings](#signing-settings)
+      - [Result](#result)
+    + [PgpDecryptFile](#pgpdecryptfile)
+      - [Input](#input-1)
+      - [Result](#result-1)
+    + [PgpSignature](#pgpsignature)
+      - [Input](#input-2)
+      - [Result](#result-2)
+    + [PgpVerifySignature](#pgpverifysignature)
+      - [Input](#input-3)
+      - [Result](#result-3)
+    + [PgpClearTextSignature](#pgpcleartextsignature)
+      - [Input](#input-4)
+      - [Result](#result-4)
+    + [PgpVerifyClearTextSignature](#pgpverifycleartextsignature)
+      - [Input](#input-5)
+      - [Result](#result-5)
 - [Building](#building)
 - [Contributing](#contributing)
 - [Change Log](#change-log)
@@ -18,35 +37,126 @@ https://www.myget.org/F/frends-community/api/v3/index.json and in Gallery view i
 
 # Tasks
 
-## PgpTasks
 
-Repeats message
+### PgpEncryptFile
 
-### Properties
+Encrypt file with PGP.
 
-| Property | Type | Description | Example |
-| -------- | -------- | -------- | -------- |
-| Message | `string` | Some string that will be repeated. | `foo` |
+#### Input
+| Property            | Type   | Description |Example|
+|---------------------|--------|-------------|-------|
+| InputFile           | string | Path to file to decrypt.|`C:\temp\message.txt`|
+| OutputFile          | string | Path to file that will be created. | `C:\temp\encryptedFile.pgp`|
+| PublicKeyFile       | string | Path to recipients public key. | `C:\temp\publicKey.asc`|
+| UseArmor            | bool   | Use ascii armor or not. |`true`|
+| UseIntegrityCheck   | bool   | Check integrity of output file or not. |`true`|
+| UseCompression      | bool   | Should file be compressed prior to encryption?|`true`|
+| CompressionType     | enum   | Type of compression to use when encrypting.|`Zip`|
+| EncryptionAlgorithm | enum   | Algorithm to use when encrypting.|`Cast5`|
+| SignWithPrivateKey  | bool   | True if you want to sign the file with private key. In this case the file is first signed and then encrypted.|`false`|
 
-### Options
+#### Signing settings
+Visible only if the file is to be signed
 
-| Property | Type | Description | Example |
-| -------- | -------- | -------- | -------- |
-| Amount | `int` | Amount how many times message is repeated. | `3` |
-| Delimiter | `string` | Character(s) used between replications. | `, ` |
+| Property               | Type   | Description |Example|
+|------------------------|--------|-------------|-------|
+| PrivateKeyFile         | string | Path to private key file to be used with signing.|`C:\temp\privateKeyFile.gpg`|
+| PrivateKeyPassword     | string | Password to the private key.|`***`|
+| SignatureHashAlgorithm | enum   | Hash algorithm to use with signature.|`Sha1`|
 
-### Returns
+#### Result
+| Property  | Type  | Description |Example|
+|-----------|-------|-------------|-------|
+| FilePath | string  | Path to file that contains encrypted file. Note: this is same path that was given as input parameter OutputFile. Copying that path to result will enable easy references in Frends, such as #result[PgpEncryptFile].FilePath | `C:\temp\encryptedFile.pgp`
 
-A result object with parameters.
 
-| Property | Type | Description | Example |
-| -------- | -------- | -------- | -------- |
-| Replication | `string` | Repeated string. | `foo, foo, foo` |
+### PgpDecryptFile
 
-Usage:
-To fetch result use syntax:
+Desrypts files that are encrypted with PGP.
 
-`#result.Replication`
+#### Input
+| Property  | Type  | Description |Example|
+|-----------|-------|-------------|-------|
+| InputFile  | string | Path to file to decrypt. | `C:\temp\encryptedFile.pgp`
+| OutputFile  | string | Path to file that will be created. | `C:\temp\decrypted_file.txt`
+| PrivateKeyFile  | string | Private key used to decrypt file. | `C:\temp\privateKey.asc`
+| PassPhrase  | string | Password for private key. | 
+
+#### Result
+| Property  | Type  | Description |Example|
+|-----------|-------|-------------|-------|
+| FilePath | string  | Path to file that contains decrypted file. Note: this is same path that was given as input parameter OutputFile. Copying that path to result will enable easy references in frends, such as #result[PgpDecryptFile].Filepath | `C:\temp\decrypted_file.txt`
+
+### PgpSignature
+
+Sings text files with PGP signature.
+
+#### Input
+| Property  | Type  | Description |Example|
+|-----------|-------|-------------|-------|
+| InputFile  | string | Path to file to sign. | `C:\temp\message.txt`
+| OutputFile  | string | Path to file that will be created. | `C:\temp\signed_message.txt`
+| PrivateKeyFile  | string | Path to private key used to sign the file. 	 | `C:\temp\privateKey.asc`
+| Password  | string |  Password for private key. | `***`
+| HashFunction  | HashFunctionType | Hash function being used. | `SHA256`
+
+#### Result
+| Property  | Type  | Description |Example|
+|-----------|-------|-------------|-------|
+| FilePath | string  | Path to file that contains sidned file. Note: this is same path that was given as input parameter OutputFile. Copying that path to result will enable easy references in Frends, such as #result[PgpSignature].FilePath | `C:\temp\signed_message.txt`
+
+
+### PgpVerifySignature
+
+Verifies files signed with PGP signature.
+
+#### Input
+| Property  | Type  | Description |Example|
+|-----------|-------|-------------|-------|
+| InputFile  | string | Path to file to verify. | `C:\temp\message.txt`
+| OutputFolder  | string | Folder where the verified file will be created. If empty, file will be created to same folder as InputFile. | `C:\temp\ `
+| PublicKeyFile  | string | Path to public key used to verify the file. 	 | `C:\temp\publicKey.asc`
+
+#### Result
+| Property  | Type  | Description |Example|
+|-----------|-------|-------------|-------|
+| FilePath | string  | Path to verified file. | `C:\temp\original_message.txt`
+| Verified | bool  | true if verification is succesfull | false
+
+### PgpClearTextSignature
+
+Sings text files with PGP clear text signature.
+
+#### Input
+| Property  | Type  | Description |Example|
+|-----------|-------|-------------|-------|
+| InputFile  | string | Path to file to decrypt. | `C:\temp\message.txt`
+| OutputFile  | string | Path to file that will be created. | `C:\temp\signed_message.txt`
+| PrivateKeyFile  | string | Path to private key used to sign the file. 	 | `C:\temp\privateKey.asc`
+| Password  | string |  Password for private key. | `***`
+| HashFunction  | string | Hash function being used. | `SHA256`
+
+#### Result
+| Property  | Type  | Description |Example|
+|-----------|-------|-------------|-------|
+| FilePath | string  | Path to file that contains sidned file. Note: this is same path that was given as input parameter OutputFile. Copying that path to result will enable easy references in Frends, such as #result[PgpClearTextSignature].FilePath | `C:\temp\signed_message.txt`
+
+### PgpVerifyClearTextSignature
+
+Verifies text files signed with PGP clear text signature.
+
+#### Input
+| Property  | Type  | Description |Example|
+|-----------|-------|-------------|-------|
+| InputFile  | string | Path to file to verify. | `C:\temp\message.txt`
+| OutputFile  | string | Path to file that will be created. | `C:\temp\message_out.txt`
+| PublicKeyFile  | string | Path to public key used to verify the file. 	 | `C:\temp\publicKey.asc`
+
+#### Result
+| Property  | Type  | Description |Example|
+|-----------|-------|-------------|-------|
+| FilePath | string  | Path to verified file. Note: this is same path that was given as input parameter OutputFile. Copying that path to result will enable easy references in Frends, such as #result[PgpVerifyClearTextSignature].FilePath | `C:\temp\message_out.txt`
+| Verified | bool  | true if verification is succesfull | true
 
 # Building
 
@@ -82,3 +192,6 @@ NOTE: Be sure to merge the latest from "upstream" before making a pull request!
 | Version | Changes |
 | ------- | ------- |
 | 0.0.1   | Development stil going on. |
+
+| Encrypt task 1.1.0   | New features:<br/>- Option to sign file<br/>- Compression and compression type is configurable<br/>- Encryption algorithm is configurable<br/>- Signature hash is configurable|
+

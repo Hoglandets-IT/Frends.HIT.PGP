@@ -1,0 +1,23 @@
+﻿{
+	"Tasks": [
+		{
+			"TaskMethod": "FRENDS.Community.PgpClearTextSignature.PgpClearTextSignatureTask.PGPClearTextSignFile"
+		},
+		{
+			"TaskMethod": "FRENDS.Community.PgpDecrypt.PgpDecryptFileTask.PgpDecryptFile"
+		},
+{
+			"TaskMethod": "Frends.Community.PgpEncrypt.PgpDecryptFileTask.PgpDecryptFile"
+		},
+{
+			"TaskMethod": "FRENDS.Community.PgpSignature.PgpSignatureTask.PGPSignFile"
+		},
+{
+			"TaskMethod": "FRENDS.Community.PgpVerifyClearTextSignature.PgpVerifyClearTextSignatureTask.PGPVerifyClearTextSignFile"
+		},
+{
+			"TaskMethod": "FRENDS.Community.PgpVerifySignature.PgpVerifySignatureTask.PGPVerifySignFile"
+		},
+
+	]
+}
