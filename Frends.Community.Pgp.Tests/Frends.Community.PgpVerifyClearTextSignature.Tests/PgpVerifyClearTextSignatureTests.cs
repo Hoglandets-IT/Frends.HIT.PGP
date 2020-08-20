@@ -3,7 +3,7 @@ using System.IO;
 
 
 
-namespace FRENDS.Community.Pgp.Tests
+namespace Frends.Community.Pgp.Tests
 {
     [TestFixture]
     class PgpVerifyClearTextSignatureTests

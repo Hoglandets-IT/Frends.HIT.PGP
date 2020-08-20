@@ -4,7 +4,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 
 
-namespace FRENDS.Community.Pgp.Tests
+namespace Frends.Community.Pgp.Tests
 { 
    [TestFixture]
     class PgpDecryptTests

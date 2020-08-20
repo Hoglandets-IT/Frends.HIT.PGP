@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 #pragma warning disable 1591
 
-namespace FRENDS.Community.Pgp
+namespace Frends.Community.Pgp
 {
 
     #region PgpClearTextSignature

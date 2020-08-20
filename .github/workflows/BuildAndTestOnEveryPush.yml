@@ -5,16 +5,11 @@ on:
     branches-ignore:
       - master
       
-# nice example: https://github.com/microsoft/vs-editor-api/blob/master/.github/workflows/main.yml
-
 jobs:
   build:
-    name: Build on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [windows-latest, ubuntu-latest]
+    name: Build on windows-latest
+    runs-on: windows-latest
+    
     steps:
     - uses: actions/checkout@v1
 

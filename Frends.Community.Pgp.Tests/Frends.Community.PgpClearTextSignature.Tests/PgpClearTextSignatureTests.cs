@@ -4,13 +4,13 @@ using System.Text.RegularExpressions;
 
 
 
-namespace FRENDS.Community.Pgp.Tests
+namespace Frends.Community.Pgp.Tests
 {
     [TestFixture]
-    class PgpTests
+    class PgpClearTextSignatureTests
     {
         // following keys should not be used on anything except testing as both private key and password are on public GitHub repository 
-        private readonly static string _solutionDir = "FRENDS.Community.PgpClearTextSignature.Tests";
+        private readonly static string _solutionDir = "Frends.Community.PgpClearTextSignature.Tests";
         private readonly static string private_key_path = _solutionDir + @"\TestData\dontuse-sec.asc";
         private readonly static string signed_message = _solutionDir + @"\TestData\signed_message.txt";
         private readonly static string message_path = _solutionDir + @"\TestData\original_message.txt";

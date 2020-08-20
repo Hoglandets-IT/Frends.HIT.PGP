@@ -9,7 +9,7 @@ using System.Text;
 
 #pragma warning disable 1591
 
-namespace FRENDS.Community.Pgp
+namespace Frends.Community.Pgp
 {
 
     public class PgpTasks

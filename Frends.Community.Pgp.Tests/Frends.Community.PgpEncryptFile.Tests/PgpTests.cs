@@ -1,4 +1,4 @@
-﻿using FRENDS.Community.Pgp;
+﻿using Frends.Community.Pgp;
 using NUnit.Framework;
 using System;
 using System.IO;
@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 namespace Frends.Community.Pgp.Tests
 {
     [TestFixture]
-    class PgpTests
+    class PgpEncryptTests
     {
         // following keys should not be used on anything except testing as both private key and password are on public GitHub repository 
         private readonly static string _solutionDir = "Frends.Community.PgpEncryptFile.Tests";

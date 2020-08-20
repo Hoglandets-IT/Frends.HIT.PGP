@@ -1,22 +1,22 @@
 ﻿{
 	"Tasks": [
 		{
-			"TaskMethod": "FRENDS.Community.PgpClearTextSignature.PgpClearTextSignatureTask.PGPClearTextSignFile"
+			"TaskMethod": "Frends.Community.PgpClearTextSignature.PgpClearTextSignatureTask.PGPClearTextSignFile"
 		},
 		{
-			"TaskMethod": "FRENDS.Community.PgpDecrypt.PgpDecryptFileTask.PgpDecryptFile"
+			"TaskMethod": "Frends.Community.PgpDecrypt.PgpDecryptFileTask.PgpDecryptFile"
 		},
 {
 			"TaskMethod": "Frends.Community.PgpEncrypt.PgpDecryptFileTask.PgpDecryptFile"
 		},
 {
-			"TaskMethod": "FRENDS.Community.PgpSignature.PgpSignatureTask.PGPSignFile"
+			"TaskMethod": "Frends.Community.PgpSignature.PgpSignatureTask.PGPSignFile"
 		},
 {
-			"TaskMethod": "FRENDS.Community.PgpVerifyClearTextSignature.PgpVerifyClearTextSignatureTask.PGPVerifyClearTextSignFile"
+			"TaskMethod": "Frends.Community.PgpVerifyClearTextSignature.PgpVerifyClearTextSignatureTask.PGPVerifyClearTextSignFile"
 		},
 {
-			"TaskMethod": "FRENDS.Community.PgpVerifySignature.PgpVerifySignatureTask.PGPVerifySignFile"
+			"TaskMethod": "Frends.Community.PgpVerifySignature.PgpVerifySignatureTask.PGPVerifySignFile"
 		},
 
 	]

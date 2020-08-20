@@ -4,7 +4,7 @@ using Org.BouncyCastle.Bcpg;
 using Org.BouncyCastle.Bcpg.OpenPgp;
 using Org.BouncyCastle.Security;
 
-using FRENDS.Community.Pgp;
+using Frends.Community.Pgp;
 
 #pragma warning disable 1591
 
