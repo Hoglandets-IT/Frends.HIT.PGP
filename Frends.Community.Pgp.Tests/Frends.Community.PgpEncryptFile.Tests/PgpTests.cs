@@ -1,9 +1,10 @@
-﻿using NUnit.Framework;
+﻿using FRENDS.Community.Pgp;
+using NUnit.Framework;
 using System;
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace Frends.Community.PgpEncrypt.Tests
+namespace Frends.Community.Pgp.Tests
 {
     [TestFixture]
     class PgpTests
@@ -26,7 +27,7 @@ namespace Frends.Community.PgpEncrypt.Tests
         [Test]
         public void EncryptFile()
         {
-            Input input = new Input
+            PgpEncryptInput input = new PgpEncryptInput
             {
                 InputFile = message_path,
                 OutputFile = encrypted_message,
@@ -35,7 +36,7 @@ namespace Frends.Community.PgpEncrypt.Tests
                 UseArmor = true
             };
 
-            Result result_object = PgpEncryptFileTask.PgpEncryptFile(input);
+            PgpEncryptResult result_object = PgpTasks.PgpEncryptFile(input);
 
             string result = File.ReadAllText(result_object.FilePath);
 
@@ -48,7 +49,7 @@ namespace Frends.Community.PgpEncrypt.Tests
         [Test]
         public void PgpEncryptFile_ShouldSignAndEncryptWithDefaultValues()
         {
-            var input = new Input
+            var input = new PgpEncryptInput
             {
                 InputFile = message_path,
                 OutputFile = encrypted_message,
@@ -56,14 +57,14 @@ namespace Frends.Community.PgpEncrypt.Tests
                 UseArmor = true,
                 UseIntegrityCheck = true,
                 SignWithPrivateKey = true,
-                SigningSettings = new SigningSettings
+                SigningSettings = new PgpEncryptSigningSettings
                 {
                     PrivateKeyFile = _privateKey,
                     PrivateKeyPassword = _privateKeyPassword
                 }
             };
 
-            Result taskResult = PgpEncryptFileTask.PgpEncryptFile(input);
+            PgpEncryptResult taskResult = PgpTasks.PgpEncryptFile(input);
             string textResult = File.ReadAllText(taskResult.FilePath);
 
             StringAssert.StartsWith($@"-----BEGIN PGP MESSAGE-----
@@ -76,20 +77,20 @@ hIwDzoB5W4N7pN4B", textResult);
         [Test(Description = "Encryption algorithm, compression type and signature hash combination tests")]
         public void PgpEncryptFile_ShouldSignAndEncryptWithAllAlgorithmCombinations(
             [Values(
-                EncryptionAlgorithm.Aes128, EncryptionAlgorithm.Aes192, EncryptionAlgorithm.Aes256, EncryptionAlgorithm.Blowfish,
-                EncryptionAlgorithm.Camellia128, EncryptionAlgorithm.Camellia192, EncryptionAlgorithm.Camellia256, EncryptionAlgorithm.Cast5,
-                EncryptionAlgorithm.Des, EncryptionAlgorithm.Idea, EncryptionAlgorithm.TripleDes, EncryptionAlgorithm.Twofish
+                PgpEncryptEncryptionAlgorithm.Aes128, PgpEncryptEncryptionAlgorithm.Aes192, PgpEncryptEncryptionAlgorithm.Aes256, PgpEncryptEncryptionAlgorithm.Blowfish,
+                PgpEncryptEncryptionAlgorithm.Camellia128, PgpEncryptEncryptionAlgorithm.Camellia192, PgpEncryptEncryptionAlgorithm.Camellia256, PgpEncryptEncryptionAlgorithm.Cast5,
+                PgpEncryptEncryptionAlgorithm.Des, PgpEncryptEncryptionAlgorithm.Idea, PgpEncryptEncryptionAlgorithm.TripleDes, PgpEncryptEncryptionAlgorithm.Twofish
             )]
-            EncryptionAlgorithm encryptionAlgorithm,
-            [Values(CompressionType.BZip2, CompressionType.Uncompressed, CompressionType.Zip, CompressionType.ZLib)]
-            CompressionType compressionType,
+            PgpEncryptEncryptionAlgorithm encryptionAlgorithm,
+            [Values(PgpEncryptCompressionType.BZip2, PgpEncryptCompressionType.Uncompressed, PgpEncryptCompressionType.Zip, PgpEncryptCompressionType.ZLib)]
+            PgpEncryptCompressionType compressionType,
             [Values(
-                SignatureHashAlgorithm.MD2, SignatureHashAlgorithm.MD5,
-                SignatureHashAlgorithm.RipeMD160, SignatureHashAlgorithm.Sha1, SignatureHashAlgorithm.Sha224, SignatureHashAlgorithm.Sha256,
-                SignatureHashAlgorithm.Sha384, SignatureHashAlgorithm.Sha512)]
-            SignatureHashAlgorithm signatureHash)
+                PgpEncryptSignatureHashAlgorithm.MD2, PgpEncryptSignatureHashAlgorithm.MD5,
+                PgpEncryptSignatureHashAlgorithm.RipeMD160, PgpEncryptSignatureHashAlgorithm.Sha1, PgpEncryptSignatureHashAlgorithm.Sha224, PgpEncryptSignatureHashAlgorithm.Sha256,
+                PgpEncryptSignatureHashAlgorithm.Sha384, PgpEncryptSignatureHashAlgorithm.Sha512)]
+            PgpEncryptSignatureHashAlgorithm signatureHash)
         {
-            var input = new Input
+            var input = new PgpEncryptInput
             {
                 InputFile = message_path,
                 OutputFile = encrypted_message,
@@ -100,7 +101,7 @@ hIwDzoB5W4N7pN4B", textResult);
                 UseArmor = true,
                 UseIntegrityCheck = true,
                 SignWithPrivateKey = true,
-                SigningSettings = new SigningSettings
+                SigningSettings = new PgpEncryptSigningSettings
                 {
                     PrivateKeyFile = _privateKey,
                     PrivateKeyPassword = _privateKeyPassword,
@@ -108,7 +109,7 @@ hIwDzoB5W4N7pN4B", textResult);
                 }
             };
 
-            Result taskResult = PgpEncryptFileTask.PgpEncryptFile(input);
+            PgpEncryptResult taskResult = PgpTasks.PgpEncryptFile(input);
             string textResult = File.ReadAllText(taskResult.FilePath);
             
             // result has to start with pgp prefix, version comment and almost static 16 chars
@@ -119,25 +120,25 @@ hIwDzoB5W4N7pN4B", textResult);
         [Test]
         public void PgpEncryptFile_ShouldEncryptWithoutCompression()
         {
-            var input = new Input
+            var input = new PgpEncryptInput
             {
                 InputFile = message_path,
                 OutputFile = encrypted_message,
                 PublicKeyFile = public_key_path,
-                EncryptionAlgorithm = EncryptionAlgorithm.Cast5,
+                EncryptionAlgorithm = PgpEncryptEncryptionAlgorithm.Cast5,
                 UseArmor = true,
                 UseIntegrityCheck = true,
                 UseCompression = false,
                 SignWithPrivateKey = true,
-                SigningSettings = new SigningSettings
+                SigningSettings = new PgpEncryptSigningSettings
                 {
                     PrivateKeyFile = _privateKey,
                     PrivateKeyPassword = _privateKeyPassword,
-                    SignatureHashAlgorithm = SignatureHashAlgorithm.Sha256
+                    SignatureHashAlgorithm = PgpEncryptSignatureHashAlgorithm.Sha256
                 }
             };
 
-            Result taskResult = PgpEncryptFileTask.PgpEncryptFile(input);
+            PgpEncryptResult taskResult = PgpTasks.PgpEncryptFile(input);
             string textResult = File.ReadAllText(taskResult.FilePath);
 
             // result has to start with pgp prefix, version comment and almost static 16 chars

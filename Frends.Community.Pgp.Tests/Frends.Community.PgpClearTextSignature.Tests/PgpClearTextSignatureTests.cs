@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 
 
-namespace FRENDS.Community.PgpClearTextSignature.Tests
+namespace FRENDS.Community.Pgp.Tests
 {
     [TestFixture]
     class PgpTests
@@ -19,16 +19,16 @@ namespace FRENDS.Community.PgpClearTextSignature.Tests
         [Test]
         public void SignOneFileSha1()
         {
-            Input input = new Input
+            PgpClearTextSignatureInput input = new PgpClearTextSignatureInput
             {
                 InputFile = message_path,
                 OutputFile = signed_message,
                 PrivateKeyFile = private_key_path,
                 Password = key_password,
-                HashFunction = HashFunctionType.Sha1,
+                HashFunction = PgpClearTextSignatureHashFunctionType.Sha1,
             };
 
-            Result result_object = PgpClearTextSignatureTask.PGPClearTextSignFile(input);
+            PgpClearTextSignatureResult result_object = PgpTasks.PGPClearTextSignFile(input);
 
             string result = File.ReadAllText(result_object.FilePath);
 

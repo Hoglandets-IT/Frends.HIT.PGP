@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Frends.Community.PgpEncrypt
+namespace Frends.Community.Pgp
 {
     static class Extensions
     {
@@ -13,5 +13,6 @@ namespace Frends.Community.PgpEncrypt
         {
             return (TEnum)Enum.Parse(typeof(TEnum), source.ToString(), true);
         }
+
     }
 }

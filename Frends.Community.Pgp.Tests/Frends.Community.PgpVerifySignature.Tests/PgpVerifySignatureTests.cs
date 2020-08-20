@@ -3,10 +3,10 @@ using System.IO;
 
 
 
-namespace FRENDS.Community.PgpVerifySignature.Tests
+namespace FRENDS.Community.Pgp.Tests
 {
     [TestFixture]
-    class PgpTests
+    class PgpVerifySignatureTests
     {
         // following keys should not be used on anything except testing as both private key and password are on public GitHub repository 
         private readonly static string _solutionDir = @"Frends.Community.PgpVerifySignature.Tests";
@@ -16,13 +16,13 @@ namespace FRENDS.Community.PgpVerifySignature.Tests
         [Test]
         public void VerifySignOneFileSha1()
         {
-            var input = new Input
+            var input = new PgpVerifySignatureInput
             {
                 InputFile = signature,
                 PublicKeyFile = public_key_path,
             };
 
-            Result result_object = PgpVerifySignatureTask.PGPVerifySignFile(input);
+            PgpVerifySignatureResult result_object = PgpTasks.PGPVerifySignFile(input);
 
             Assert.That(result_object.Verified);
         }

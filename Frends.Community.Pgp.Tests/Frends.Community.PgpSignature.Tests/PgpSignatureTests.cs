@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using FRENDS.Community.Pgp;
+using NUnit.Framework;
 using System.IO;
 using System.Text.RegularExpressions;
 
@@ -19,16 +20,16 @@ namespace FRENDS.Community.PgpSignature.Tests
         [Test]
         public void SignOneFileSha1()
         {
-            Input input = new Input
+            PgpSignatureInput input = new PgpSignatureInput
             {
                 InputFile = message_path,
                 OutputFile = signature,
                 PrivateKeyFile = private_key_path,
                 Password = key_password,
-                HashFunction = HashFunctionType.Sha1,
+                HashFunction = PgpSignatureHashFunctionType.Sha1,
             };
 
-            Result result_object = PgpSignatureTask.PGPSignFile(input);
+            PgpSignatureResult result_object = PgpTasks.PGPSignFile(input);
 
             string result = File.ReadAllText(result_object.FilePath);
 

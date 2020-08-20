@@ -3,10 +3,10 @@ using System.IO;
 
 
 
-namespace FRENDS.Community.PgpVerifyClearTextSignature.Tests
+namespace FRENDS.Community.Pgp.Tests
 {
     [TestFixture]
-    class PgpTests
+    class PgpVerifyClearTextSignatureTests
     {
         // following keys should not be used on anything except testing as both private key and password are on public GitHub repository 
         private readonly static string _solutionDir = "Frends.Community.PgpVerifyClearTextSignature.Tests";
@@ -17,14 +17,14 @@ namespace FRENDS.Community.PgpVerifyClearTextSignature.Tests
         [Test]
         public void VerifySignOneFileSha1()
         {
-            Input input = new Input
+            PgpVerifyClearTextSignatureInput input = new PgpVerifyClearTextSignatureInput
             {
                 InputFile = signature,
                 PublicKeyFile = public_key_path,
                 OutputFile = output,
             };
 
-            Result result_object = PgpVerifyClearTextSignatureTask.PGPVerifyClearTextSignFile(input);
+            PgpVerifyClearTextSignatureResult result_object = PgpTasks.PGPVerifyClearTextSignFile(input);
             Assert.That(result_object.Verified);
         }
     }

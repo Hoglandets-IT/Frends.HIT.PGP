@@ -4,10 +4,10 @@ using System.IO;
 using System.Text.RegularExpressions;
 
 
-namespace FRENDS.Community.PgpDecrypt.Tests
+namespace FRENDS.Community.Pgp.Tests
 { 
    [TestFixture]
-    class PgpTests
+    class PgpDecryptTests
     {
         // following keys should not be used on anything except testing as both private key and password are on public GitHub repository 
         //private readonly static string _solutionDir = Path.GetDirectoryName(Path.GetDirectoryName(TestContext.CurrentContext.TestDirectory));
@@ -28,7 +28,7 @@ namespace FRENDS.Community.PgpDecrypt.Tests
         [Test]
         public void DecryptFile()
         {
-            Input input = new Input
+            PgpDecryptInput input = new PgpDecryptInput
             {
                 InputFile = encrypted_message,
                 OutputFile = decrypted_message,
@@ -36,7 +36,7 @@ namespace FRENDS.Community.PgpDecrypt.Tests
                 PassPhrase = key_password,
             };
 
-            Result result_object = PgpDecryptFileTask.PgpDecryptFile(input);
+            PgpDecryptResult result_object = PgpTasks.PgpDecrypt(input);
 
             string result = File.ReadAllText(result_object.FilePath);
 
