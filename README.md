@@ -191,7 +191,5 @@ NOTE: Be sure to merge the latest from "upstream" before making a pull request!
 
 | Version | Changes |
 | ------- | ------- |
-| 0.0.1   | Development stil going on. |
-
-| Encrypt task 1.1.0   | New features:<br/>- Option to sign file<br/>- Compression and compression type is configurable<br/>- Encryption algorithm is configurable<br/>- Signature hash is configurable|
+| 2.0.0   | First multitarget version of PGP tasks. Combines all previous tasks: [Frends.Community.PgpEncryptFile](https://github.com/CommunityHiQ/Frends.Community.PgpEncryptFile), [Frends.Community.PgpDecryptFile](https://github.com/CommunityHiQ/Frends.Community.PgpDecryptFile), [Frends.Community.PgpSignature](https://github.com/CommunityHiQ/Frends.Community.PgpSignature), [Frends.Community.PgpVerifySignature](https://github.com/CommunityHiQ/Frends.Community.PgpVerifySignature),[Frends.Community.PgpClearTextSignature](https://github.com/CommunityHiQ/Frends.Community.PgpClearTextSignature), [Frends.Community.PgpVerifyClearTextSignature](https://github.com/CommunityHiQ/Frends.Community.PgpVerifyClearTextSignature)|
 
