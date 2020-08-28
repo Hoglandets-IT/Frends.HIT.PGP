@@ -1,38 +1,13 @@
 # Frends.Community.Pgp
 
-FRENDS Community Task for PgpTasks
+Frends Community tasks for PGP operations.
 
 [![Actions Status](https://github.com/CommunityHiQ/Frends.Community.Pgp/workflows/PackAndPushAfterMerge/badge.svg)](https://github.com/CommunityHiQ/Frends.Community.Pgp/actions) ![MyGet](https://img.shields.io/myget/frends-community/v/Frends.Community.Pgp) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) 
 
-- [Frends.Community.Pgp](#frendscommunitypgp)
-- [Installing](#installing)
-- [Tasks](#tasks)
-    + [PgpEncryptFile](#pgpencryptfile)
-      - [Input](#input)
-      - [Signing settings](#signing-settings)
-      - [Result](#result)
-    + [PgpDecryptFile](#pgpdecryptfile)
-      - [Input](#input-1)
-      - [Result](#result-1)
-    + [PgpSignature](#pgpsignature)
-      - [Input](#input-2)
-      - [Result](#result-2)
-    + [PgpVerifySignature](#pgpverifysignature)
-      - [Input](#input-3)
-      - [Result](#result-3)
-    + [PgpClearTextSignature](#pgpcleartextsignature)
-      - [Input](#input-4)
-      - [Result](#result-4)
-    + [PgpVerifyClearTextSignature](#pgpverifycleartextsignature)
-      - [Input](#input-5)
-      - [Result](#result-5)
-- [Building](#building)
-- [Contributing](#contributing)
-- [Change Log](#change-log)
 
 # Installing
 
-You can install the task via FRENDS UI Task View or you can find the NuGet package from the following NuGet feed
+You can install the task via frends UI Task View or you can find the NuGet package from the following NuGet feed
 https://www.myget.org/F/frends-community/api/v3/index.json and in Gallery view in MyGet https://www.myget.org/feed/frends-community/package/nuget/Frends.Community.Pgp
 
 # Tasks
@@ -87,7 +62,7 @@ Desrypts files that are encrypted with PGP.
 |-----------|-------|-------------|-------|
 | FilePath | string  | Path to file that contains decrypted file. Note: this is same path that was given as input parameter OutputFile. Copying that path to result will enable easy references in frends, such as #result[PgpDecryptFile].Filepath | `C:\temp\decrypted_file.txt`
 
-### PgpSignature
+### PgpSignFile
 
 Sings text files with PGP signature.
 
@@ -106,7 +81,7 @@ Sings text files with PGP signature.
 | FilePath | string  | Path to file that contains sidned file. Note: this is same path that was given as input parameter OutputFile. Copying that path to result will enable easy references in Frends, such as #result[PgpSignature].FilePath | `C:\temp\signed_message.txt`
 
 
-### PgpVerifySignature
+### PgpVerifyFileSignature
 
 Verifies files signed with PGP signature.
 
@@ -123,7 +98,7 @@ Verifies files signed with PGP signature.
 | FilePath | string  | Path to verified file. | `C:\temp\original_message.txt`
 | Verified | bool  | true if verification is succesfull | false
 
-### PgpClearTextSignature
+### PgpClearTextSignFile
 
 Sings text files with PGP clear text signature.
 
@@ -141,7 +116,7 @@ Sings text files with PGP clear text signature.
 |-----------|-------|-------------|-------|
 | FilePath | string  | Path to file that contains sidned file. Note: this is same path that was given as input parameter OutputFile. Copying that path to result will enable easy references in Frends, such as #result[PgpClearTextSignature].FilePath | `C:\temp\signed_message.txt`
 
-### PgpVerifyClearTextSignature
+### PgpVerifyFileClearTextSignature
 
 Verifies text files signed with PGP clear text signature.
 

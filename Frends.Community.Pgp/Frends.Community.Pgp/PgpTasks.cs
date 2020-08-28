@@ -16,122 +16,21 @@ namespace Frends.Community.Pgp
     {
         internal const int PGP_ENCRYPT_BUFFER_SIZE = 1 << 16;
 
-        #region PgpClearTextSignatureTasks
-        /// <summary>
-        /// Create a file with PGP clear text signature. See documentation at https://github.com/CommunityHiQ/Frends.Community.PgpClearTextSignature Returns: Object {string FilePath}
-        /// </summary>
-        public static PgpClearTextSignatureResult PGPClearTextSignFile(PgpClearTextSignatureInput input)
-        {
-            HashAlgorithmTag digest;
-            if (input.HashFunction == PgpClearTextSignatureHashFunctionType.MD5)
-            {
-                digest = HashAlgorithmTag.MD5;
-            }
-            else if (input.HashFunction == PgpClearTextSignatureHashFunctionType.RipeMD160)
-            {
-                digest = HashAlgorithmTag.RipeMD160;
-            }
-            else if (input.HashFunction == PgpClearTextSignatureHashFunctionType.Sha1)
-            {
-                digest = HashAlgorithmTag.Sha1;
-            }
-            else if (input.HashFunction == PgpClearTextSignatureHashFunctionType.Sha224)
-            {
-                digest = HashAlgorithmTag.Sha224;
-            }
-            else if (input.HashFunction == PgpClearTextSignatureHashFunctionType.Sha384)
-            {
-                digest = HashAlgorithmTag.Sha384;
-            }
-            else if (input.HashFunction == PgpClearTextSignatureHashFunctionType.Sha512)
-            {
-                digest = HashAlgorithmTag.Sha512;
-            }
-            else
-            {
-                digest = HashAlgorithmTag.Sha256;
-            }
 
-            Stream privateKeyStream = File.OpenRead(input.PrivateKeyFile);
-
-            PgpSecretKey pgpSecKey = Services.ReadSecretKey(privateKeyStream);
-            PgpPrivateKey pgpPrivKey = pgpSecKey.ExtractPrivateKey(input.Password.ToCharArray());
-            PgpSignatureGenerator sGen = new PgpSignatureGenerator(pgpSecKey.PublicKey.Algorithm, digest);
-            PgpSignatureSubpacketGenerator spGen = new PgpSignatureSubpacketGenerator();
-
-            sGen.InitSign(Org.BouncyCastle.Bcpg.OpenPgp.PgpSignature.CanonicalTextDocument, pgpPrivKey);
-
-            IEnumerator enumerator = pgpSecKey.PublicKey.GetUserIds().GetEnumerator();
-            if (enumerator.MoveNext())
-            {
-                spGen.SetSignerUserId(false, (string)enumerator.Current);
-                sGen.SetHashedSubpackets(spGen.Generate());
-            }
-
-            Stream fIn = File.OpenRead(input.InputFile);
-            Stream outputStream = File.Create(input.OutputFile);
-
-            ArmoredOutputStream aOut = new ArmoredOutputStream(outputStream);
-
-            aOut.BeginClearText(digest);
-
-            //
-            // note the last \n/\r/\r\n in the file is ignored
-            //
-            MemoryStream lineOut = new MemoryStream();
-            int lookAhead = Services.ReadInputLine(lineOut, fIn);
-
-            Services.ProcessLine(aOut, sGen, lineOut.ToArray());
-
-            if (lookAhead != -1)
-            {
-                do
-                {
-                    lookAhead = Services.ReadInputLine(lineOut, lookAhead, fIn);
-
-                    sGen.Update((byte)'\r');
-                    sGen.Update((byte)'\n');
-
-                    Services.ProcessLine(aOut, sGen, lineOut.ToArray());
-                }
-                while (lookAhead != -1);
-            }
-
-            fIn.Close();
-
-            aOut.EndClearText();
-
-            BcpgOutputStream bOut = new BcpgOutputStream(aOut);
-
-            sGen.Generate().Encode(bOut);
-
-            aOut.Close();
-            outputStream.Close();
-
-            PgpClearTextSignatureResult ret = new PgpClearTextSignatureResult
-            {
-                FilePath = input.OutputFile
-            };
-
-            return ret;
-        }
-
-        #endregion
-
-        #region PgpDecrypt
+        #region PgpDecryptFile
 
         /// <summary>
         /// Decrypt the file using the private key.
         /// </summary>
-        public static PgpDecryptResult PgpDecrypt(PgpDecryptInput input)
+        public static PgpDecryptResult PgpDecryptFile(PgpDecryptInput input)
         {
             if (!File.Exists(input.InputFile))
-                throw new FileNotFoundException(String.Format("Encrypted File [{0}] not found.", input.InputFile));
+                throw new FileNotFoundException(string.Format("Encrypted File [{0}] not found.", input.InputFile));
 
             if (!File.Exists(input.PrivateKeyFile))
-                throw new FileNotFoundException(String.Format("Private Key File [{0}] not found.", input.PrivateKeyFile));
+                throw new FileNotFoundException(string.Format("Private Key File [{0}] not found.", input.PrivateKeyFile));
 
-            if (String.IsNullOrEmpty(input.OutputFile))
+            if (string.IsNullOrEmpty(input.OutputFile))
                 throw new ArgumentNullException("Invalid Output file path.");
 
             using (Stream inputStream = File.OpenRead(input.InputFile))
@@ -253,8 +152,7 @@ namespace Frends.Community.Pgp
 
         #endregion
 
-
-        #region PgpEncrypt
+        #region PgpEncryptFile
 
         /// <summary>
         /// Encrypts a file using public key.
@@ -270,8 +168,6 @@ namespace Frends.Community.Pgp
 
             if (!inputFile.Exists)
                 throw new ArgumentException("File to encrypt does not exists", "input.InputFile");
-
-            try
             {
                 // destination file
                 using (Stream outputStream = File.OpenWrite(input.OutputFile))
@@ -313,21 +209,17 @@ namespace Frends.Community.Pgp
                     FilePath = input.OutputFile
                 };
             }
-            catch (PgpException e)
-            {
-                throw;
-            }
+
         }
 
         #endregion
 
-
-        #region PgpSignature
+        #region PgpSignFile
 
         /// <summary>
         /// Sign a file with PGP signature. See documentation at https://github.com/CommunityHiQ/Frends.Community.PgpSignature Returns: Object {string FilePath}
         /// </summary>
-        public static PgpSignatureResult PGPSignFile(PgpSignatureInput input)
+        public static PgpSignatureResult PgpSignFile(PgpSignatureInput input)
         {
             HashAlgorithmTag digest = input.HashFunction.ConvertEnum<HashAlgorithmTag>();
 
@@ -385,11 +277,185 @@ namespace Frends.Community.Pgp
 
         #endregion
 
-        #region PgpVerifyClearTextSignature 
+        #region PgpVerifyFileSignature
+        /// <summary>
+        /// Verifies a PGP signature. See documentation at https://github.com/CommunityHiQ/Frends.Community.PgpVerifySignature Returns: Object {string FilePath, Boolean Verified}
+        /// </summary>
+        public static PgpVerifySignatureResult PgpVerifyFileSignature(PgpVerifySignatureInput input)
+        {
+
+            using (var inputStream = PgpUtilities.GetDecoderStream(File.OpenRead(input.InputFile)))
+            using (var keyStream = PgpUtilities.GetDecoderStream(File.OpenRead(input.PublicKeyFile)))
+            {
+                PgpObjectFactory pgpFact = new PgpObjectFactory(inputStream);
+                PgpOnePassSignatureList signatureList = (PgpOnePassSignatureList)pgpFact.NextPgpObject();
+                PgpOnePassSignature onePassSignature = signatureList[0];
+
+                PgpLiteralData p2 = (PgpLiteralData)pgpFact.NextPgpObject();
+                Stream dataIn = p2.GetInputStream();
+                PgpPublicKeyRingBundle pgpRing = new PgpPublicKeyRingBundle(keyStream);
+                PgpPublicKey key = pgpRing.GetPublicKey(onePassSignature.KeyId);
+
+                string outputPath;
+                if (string.IsNullOrWhiteSpace(input.OutputFolder))
+                {
+                    outputPath = Path.Combine(Path.GetDirectoryName(input.InputFile), p2.FileName);
+                }
+                else
+                {
+                    outputPath = Path.Combine(input.OutputFolder, p2.FileName);
+                }
+                using (var outputStream = File.Create(outputPath))
+                {
+                    onePassSignature.InitVerify(key);
+
+                    int ch;
+                    while ((ch = dataIn.ReadByte()) >= 0)
+                    {
+                        onePassSignature.Update((byte)ch);
+                        outputStream.WriteByte((byte)ch);
+                    }
+                    outputStream.Close();
+                }
+
+                bool verified;
+                // Will throw Exception if file is altered
+                try
+                {
+                    PgpSignatureList p3 = (PgpSignatureList)pgpFact.NextPgpObject();
+                    PgpSignature firstSig = p3[0];
+                    verified = onePassSignature.Verify(firstSig);
+                }
+                catch (Exception)
+                {
+                    PgpVerifySignatureResult retError = new PgpVerifySignatureResult
+                    {
+                        FilePath = input.OutputFolder,
+                        Verified = false
+                    };
+
+                    return retError;
+                }
+
+                PgpVerifySignatureResult ret = new PgpVerifySignatureResult
+                {
+                    FilePath = outputPath,
+                    Verified = verified
+                };
+
+                return ret;
+            }
+        }
+
+        #endregion
+
+        #region PgpClearTextSignFile
+        /// <summary>
+        /// Create a file with PGP clear text signature. See documentation at https://github.com/CommunityHiQ/Frends.Community.PgpClearTextSignature Returns: Object {string FilePath}
+        /// </summary>
+        public static PgpClearTextSignatureResult PgpClearTextSignFile(PgpClearTextSignatureInput input)
+        {
+            HashAlgorithmTag digest;
+            if (input.HashFunction == PgpClearTextSignatureHashFunctionType.MD5)
+            {
+                digest = HashAlgorithmTag.MD5;
+            }
+            else if (input.HashFunction == PgpClearTextSignatureHashFunctionType.RipeMD160)
+            {
+                digest = HashAlgorithmTag.RipeMD160;
+            }
+            else if (input.HashFunction == PgpClearTextSignatureHashFunctionType.Sha1)
+            {
+                digest = HashAlgorithmTag.Sha1;
+            }
+            else if (input.HashFunction == PgpClearTextSignatureHashFunctionType.Sha224)
+            {
+                digest = HashAlgorithmTag.Sha224;
+            }
+            else if (input.HashFunction == PgpClearTextSignatureHashFunctionType.Sha384)
+            {
+                digest = HashAlgorithmTag.Sha384;
+            }
+            else if (input.HashFunction == PgpClearTextSignatureHashFunctionType.Sha512)
+            {
+                digest = HashAlgorithmTag.Sha512;
+            }
+            else
+            {
+                digest = HashAlgorithmTag.Sha256;
+            }
+
+            Stream privateKeyStream = File.OpenRead(input.PrivateKeyFile);
+
+            PgpSecretKey pgpSecKey = Services.ReadSecretKey(privateKeyStream);
+            PgpPrivateKey pgpPrivKey = pgpSecKey.ExtractPrivateKey(input.Password.ToCharArray());
+            PgpSignatureGenerator sGen = new PgpSignatureGenerator(pgpSecKey.PublicKey.Algorithm, digest);
+            PgpSignatureSubpacketGenerator spGen = new PgpSignatureSubpacketGenerator();
+
+            sGen.InitSign(Org.BouncyCastle.Bcpg.OpenPgp.PgpSignature.CanonicalTextDocument, pgpPrivKey);
+
+            IEnumerator enumerator = pgpSecKey.PublicKey.GetUserIds().GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                spGen.SetSignerUserId(false, (string)enumerator.Current);
+                sGen.SetHashedSubpackets(spGen.Generate());
+            }
+
+            Stream fIn = File.OpenRead(input.InputFile);
+            Stream outputStream = File.Create(input.OutputFile);
+
+            ArmoredOutputStream aOut = new ArmoredOutputStream(outputStream);
+
+            aOut.BeginClearText(digest);
+
+            //
+            // note the last \n/\r/\r\n in the file is ignored
+            //
+            MemoryStream lineOut = new MemoryStream();
+            int lookAhead = Services.ReadInputLine(lineOut, fIn);
+
+            Services.ProcessLine(aOut, sGen, lineOut.ToArray());
+
+            if (lookAhead != -1)
+            {
+                do
+                {
+                    lookAhead = Services.ReadInputLine(lineOut, lookAhead, fIn);
+
+                    sGen.Update((byte)'\r');
+                    sGen.Update((byte)'\n');
+
+                    Services.ProcessLine(aOut, sGen, lineOut.ToArray());
+                }
+                while (lookAhead != -1);
+            }
+
+            fIn.Close();
+
+            aOut.EndClearText();
+
+            BcpgOutputStream bOut = new BcpgOutputStream(aOut);
+
+            sGen.Generate().Encode(bOut);
+
+            aOut.Close();
+            outputStream.Close();
+
+            PgpClearTextSignatureResult ret = new PgpClearTextSignatureResult
+            {
+                FilePath = input.OutputFile
+            };
+
+            return ret;
+        }
+
+        #endregion
+
+        #region PgpVerifyFileClearTextSignature 
         /// <summary>
         /// Verifies clear text PGP signature. See documentation at https://github.com/CommunityHiQ/Frends.Community.PgpVerifyClearTextSignature Returns: Object {string FilePath, Boolean Verified}
         /// </summary>
-        public static PgpVerifyClearTextSignatureResult PGPVerifyClearTextSignFile(PgpVerifyClearTextSignatureInput input)
+        public static PgpVerifyClearTextSignatureResult PgpVerifyFileClearTextSignature(PgpVerifyClearTextSignatureInput input)
         {
             using (var inStr = File.OpenRead(input.InputFile))
             using (var outStr = File.Create(input.OutputFile))
@@ -438,7 +504,7 @@ namespace Frends.Community.Pgp
 
                 PgpObjectFactory pgpFact = new PgpObjectFactory(aInputStr);
                 PgpSignatureList p3 = (PgpSignatureList)pgpFact.NextPgpObject();
-                Org.BouncyCastle.Bcpg.OpenPgp.PgpSignature sig = p3[0];
+                PgpSignature sig = p3[0];
                 inStr.Close();
 
 
@@ -477,80 +543,6 @@ namespace Frends.Community.Pgp
         }
 
         #endregion
-
-
-        #region PgpVerifySignature
-        /// <summary>
-        /// Verifies a PGP signature. See documentation at https://github.com/CommunityHiQ/Frends.Community.PgpVerifySignature Returns: Object {string FilePath, Boolean Verified}
-        /// </summary>
-        public static PgpVerifySignatureResult PGPVerifySignFile(PgpVerifySignatureInput input)
-        {
-
-            using (var inputStream = PgpUtilities.GetDecoderStream(File.OpenRead(input.InputFile)))
-            using (var keyStream = PgpUtilities.GetDecoderStream(File.OpenRead(input.PublicKeyFile)))
-            {
-                PgpObjectFactory pgpFact = new PgpObjectFactory(inputStream);
-                PgpOnePassSignatureList signatureList = (PgpOnePassSignatureList)pgpFact.NextPgpObject();
-                PgpOnePassSignature onePassSignature = signatureList[0];
-
-                PgpLiteralData p2 = (PgpLiteralData)pgpFact.NextPgpObject();
-                Stream dataIn = p2.GetInputStream();
-                PgpPublicKeyRingBundle pgpRing = new PgpPublicKeyRingBundle(keyStream);
-                PgpPublicKey key = pgpRing.GetPublicKey(onePassSignature.KeyId);
-
-                string outputPath;
-                if (String.IsNullOrWhiteSpace(input.OutputFolder))
-                {
-                    outputPath = Path.Combine(Path.GetDirectoryName(input.InputFile), p2.FileName);
-                }
-                else
-                {
-                    outputPath = Path.Combine(input.OutputFolder, p2.FileName);
-                }
-                using (var outputStream = File.Create(outputPath))
-                {
-                    onePassSignature.InitVerify(key);
-
-                    int ch;
-                    while ((ch = dataIn.ReadByte()) >= 0)
-                    {
-                        onePassSignature.Update((byte)ch);
-                        outputStream.WriteByte((byte)ch);
-                    }
-                    outputStream.Close();
-                }
-
-                bool verified;
-                // Will throw Exception if file is altered
-                try
-                {
-                    PgpSignatureList p3 = (PgpSignatureList)pgpFact.NextPgpObject();
-                    Org.BouncyCastle.Bcpg.OpenPgp.PgpSignature firstSig = p3[0];
-                    verified = onePassSignature.Verify(firstSig);
-                }
-                catch (Exception)
-                {
-                    PgpVerifySignatureResult retError = new PgpVerifySignatureResult
-                    {
-                        FilePath = input.OutputFolder,
-                        Verified = false
-                    };
-
-                    return retError;
-                }
-
-                PgpVerifySignatureResult ret = new PgpVerifySignatureResult
-                {
-                    FilePath = outputPath,
-                    Verified = verified
-                };
-
-                return ret;
-            }
-        }
-
-#endregion
-
 
     }
 

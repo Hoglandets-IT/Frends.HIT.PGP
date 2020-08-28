@@ -24,7 +24,7 @@ namespace Frends.Community.Pgp.Tests
                 OutputFile = output,
             };
 
-            PgpVerifyClearTextSignatureResult result_object = PgpTasks.PGPVerifyClearTextSignFile(input);
+            PgpVerifyClearTextSignatureResult result_object = PgpTasks.PgpVerifyFileClearTextSignature(input);
             Assert.That(result_object.Verified);
         }
     }

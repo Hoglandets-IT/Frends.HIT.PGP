@@ -66,7 +66,7 @@ namespace Frends.Community.Pgp
     }
     #endregion
 
-    #region PgpDecrypt
+    #region PgpDecryptFile
 
     public class PgpDecryptInput
     {

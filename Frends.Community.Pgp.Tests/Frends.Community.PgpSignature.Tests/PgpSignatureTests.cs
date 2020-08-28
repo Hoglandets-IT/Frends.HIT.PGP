@@ -29,11 +29,11 @@ namespace Frends.Community.Pgp.Tests
                 HashFunction = PgpSignatureHashFunctionType.Sha1,
             };
 
-            PgpSignatureResult result_object = PgpTasks.PGPSignFile(input);
+            PgpSignatureResult result_object = PgpTasks.PgpSignFile(input);
 
             string result = File.ReadAllText(result_object.FilePath);
 
-            string expectedResult = "-----BEGINPGPMESSAGE-----Version:BCPGC#v1.8.1.0kA0DAAIBQmrabh8os";
+            string expectedResult = "-----BEGINPGPMESSAGE-----Version:BCPGC#v1.8.6.0kA0DAAIBQmrabh8os";
             // Rest of the file is random.
 
             Assert.That(Regex.Replace(result, @"[\s+]", ""), Does.StartWith(Regex.Replace(expectedResult, @"[\s+]", "")));

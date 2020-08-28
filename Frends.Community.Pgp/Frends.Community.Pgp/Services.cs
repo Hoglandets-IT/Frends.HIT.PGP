@@ -199,7 +199,7 @@ namespace Frends.Community.Pgp
 
         #endregion
 
-        #region PgpDecrypt
+        #region PgpDecryptFile
         /// <summary>
         /// Search a secret key ring collection for a secret key corresponding to keyId if it exists.
         /// </summary>

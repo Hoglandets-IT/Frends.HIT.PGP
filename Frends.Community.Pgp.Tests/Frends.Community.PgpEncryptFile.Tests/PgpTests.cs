@@ -40,7 +40,7 @@ namespace Frends.Community.Pgp.Tests
 
             string result = File.ReadAllText(result_object.FilePath);
 
-            string expectedResult = "-----BEGINPGPMESSAGE-----Version:BCPGC#v1.8.1.0hIwDzoB5W4N7pN4B";
+            string expectedResult = "-----BEGINPGPMESSAGE-----Version:BCPGC#v1.8.6.0hIwDzoB5W4N7pN4B";
              // Rest of the file is random.
 
             Assert.That(Regex.Replace(result, @"[\s+]", ""), Does.StartWith(Regex.Replace(expectedResult, @"[\s+]", "")));
@@ -68,7 +68,7 @@ namespace Frends.Community.Pgp.Tests
             string textResult = File.ReadAllText(taskResult.FilePath);
 
             StringAssert.StartsWith($@"-----BEGIN PGP MESSAGE-----
-Version: BCPG C# v1.8.1.0
+Version: BCPG C# v1.8.6.0
 
 hIwDzoB5W4N7pN4B", textResult);
             StringAssert.EndsWith($"-----END PGP MESSAGE-----{Environment.NewLine}", textResult);
@@ -113,7 +113,7 @@ hIwDzoB5W4N7pN4B", textResult);
             string textResult = File.ReadAllText(taskResult.FilePath);
             
             // result has to start with pgp prefix, version comment and almost static 16 chars
-            StringAssert.IsMatch(@"^-----BEGIN PGP MESSAGE-----\s{2}Version: BCPG C# v1.8.1.0\s{4}hI(s|w)DzoB5W4N7pN4B*", textResult);
+            StringAssert.IsMatch(@"^-----BEGIN PGP MESSAGE-----\s{2}Version: BCPG C# v1.8.6.0\s{4}hI(s|w)DzoB5W4N7pN4B*", textResult);
             StringAssert.EndsWith($"-----END PGP MESSAGE-----{Environment.NewLine}", textResult);
         }
 
@@ -142,7 +142,7 @@ hIwDzoB5W4N7pN4B", textResult);
             string textResult = File.ReadAllText(taskResult.FilePath);
 
             // result has to start with pgp prefix, version comment and almost static 16 chars
-            StringAssert.IsMatch(@"^-----BEGIN PGP MESSAGE-----\s{2}Version: BCPG C# v1.8.1.0\s{4}hI(s|w)DzoB5W4N7pN4B", textResult);
+            StringAssert.IsMatch(@"^-----BEGIN PGP MESSAGE-----\s{2}Version: BCPG C# v1.8.6.0\s{4}hI(s|w)DzoB5W4N7pN4B", textResult);
             StringAssert.EndsWith($"-----END PGP MESSAGE-----{Environment.NewLine}", textResult);
         }
     }

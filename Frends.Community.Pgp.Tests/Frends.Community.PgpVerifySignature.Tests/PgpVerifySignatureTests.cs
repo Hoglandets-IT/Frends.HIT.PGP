@@ -22,7 +22,7 @@ namespace Frends.Community.Pgp.Tests
                 PublicKeyFile = public_key_path,
             };
 
-            PgpVerifySignatureResult result_object = PgpTasks.PGPVerifySignFile(input);
+            PgpVerifySignatureResult result_object = PgpTasks.PgpVerifyFileSignature(input);
 
             Assert.That(result_object.Verified);
         }
