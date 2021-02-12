@@ -4,16 +4,13 @@ using Org.BouncyCastle.Bcpg;
 using Org.BouncyCastle.Bcpg.OpenPgp;
 using Org.BouncyCastle.Security;
 
-using Frends.Community.Pgp;
-
 #pragma warning disable 1591
-
 
 namespace Frends.Community.Pgp
 {
 
     #region PgpClearTextSignature
-    public static class Services
+    public static class PgpServices
     {
         internal static int ReadInputLine(
         MemoryStream bOut,
@@ -21,36 +18,32 @@ namespace Frends.Community.Pgp
         {
             bOut.SetLength(0);
 
-            int lookAhead = -1;
+            var lookAhead = -1;
             int ch;
 
             while ((ch = fIn.ReadByte()) >= 0)
             {
                 bOut.WriteByte((byte)ch);
-                if (ch == '\r' || ch == '\n')
-                {
-                    lookAhead = ReadPassedEol(bOut, ch, fIn);
-                    break;
-                }
+                if (ch != '\r' && ch != '\n') continue;
+                lookAhead = ReadPassedEol(bOut, ch, fIn);
+                break;
             }
 
             return lookAhead;
         }
 
-        internal static int PgpVerifyClearTextSignatureReadInputLine(MemoryStream bOut, int lookAhead, Stream fIn)
+        internal static int VerifyClearTextSignatureReadInputLine(MemoryStream bOut, int lookAhead, Stream fIn)
         {
             bOut.SetLength(0);
 
-            int ch = lookAhead;
+            var ch = lookAhead;
 
             do
             {
                 bOut.WriteByte((byte)ch);
-                if (ch == '\r' || ch == '\n')
-                {
-                    lookAhead = ReadPassedEol(bOut, ch, fIn);
-                    break;
-                }
+                if (ch != '\r' && ch != '\n') continue;
+                lookAhead = ReadPassedEol(bOut, ch, fIn);
+                break;
             }
             while ((ch = fIn.ReadByte()) >= 0);
 
@@ -92,21 +85,19 @@ namespace Frends.Community.Pgp
 
 
 
-        internal static int PgpVerifyClearTextSignatureReadInputLine(MemoryStream bOut, Stream fIn)
+        internal static int VerifyClearTextSignatureReadInputLine(MemoryStream bOut, Stream fIn)
         {
             bOut.SetLength(0);
 
-            int lookAhead = -1;
+            var lookAhead = -1;
             int ch;
 
             while ((ch = fIn.ReadByte()) >= 0)
             {
                 bOut.WriteByte((byte)ch);
-                if (ch == '\r' || ch == '\n')
-                {
-                    lookAhead = ReadPassedEol(bOut, ch, fIn);
-                    break;
-                }
+                if (ch != '\r' && ch != '\n') continue;
+                lookAhead = ReadPassedEol(bOut, ch, fIn);
+                break;
             }
 
             return lookAhead;
@@ -228,7 +219,7 @@ namespace Frends.Community.Pgp
             PgpPublicKey publicKey = ReadPublicKey(input.PublicKeyFile);
             PgpEncryptedDataGenerator encryptedDataGenerator = new PgpEncryptedDataGenerator(algorithmTag, input.UseIntegrityCheck, new SecureRandom());
             encryptedDataGenerator.AddMethod(publicKey);
-            return encryptedDataGenerator.Open(stream, new byte[PgpTasks.PGP_ENCRYPT_BUFFER_SIZE]);
+            return encryptedDataGenerator.Open(stream, new byte[PgpTasks.EncryptBufferSize]);
         }
 
         /// <summary>
@@ -341,7 +332,7 @@ namespace Frends.Community.Pgp
         #region PgpSignature
 
 
-        internal static PgpSecretKey PgpSignatureReadSecretKey(Stream input)
+        internal static PgpSecretKey SignatureReadSecretKey(Stream input)
         {
             PgpSecretKeyRingBundle pgpSec = new PgpSecretKeyRingBundle(
                 PgpUtilities.GetDecoderStream(input));
@@ -383,11 +374,11 @@ namespace Frends.Community.Pgp
         }
 
 
-        internal static void ProcessLine(Org.BouncyCastle.Bcpg.OpenPgp.PgpSignature sig, byte[] line)
+        internal static void ProcessLine(PgpSignature sig, byte[] line)
         {
             // note: trailing white space needs to be removed from the end of
             // each line for signature calculation RFC 4880 Section 7.1
-            int length = GetLengthWithoutWhiteSpace(line);
+            var length = GetLengthWithoutWhiteSpace(line);
             if (length > 0)
             {
                 sig.Update(line, 0, length);

@@ -1,5 +1,4 @@
-﻿using Frends.Community.Pgp;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -10,10 +9,10 @@ namespace Frends.Community.Pgp.Tests
     class PgpEncryptTests
     {
         // following keys should not be used on anything except testing as both private key and password are on public GitHub repository 
-        private readonly static string _solutionDir = "Frends.Community.PgpEncryptFile.Tests";
-        private readonly static string public_key_path = _solutionDir + @"\TestData\pub.asc";
-        private readonly static string message_path = _solutionDir + @"\TestData\original_message.txt";
-        private readonly static string encrypted_message = _solutionDir + @"\TestData\encrypted_message.pgp";
+        private static readonly string SolutionDir = "Frends.Community.PgpEncryptFile.Tests";
+        private static readonly string PublicKeyPath = SolutionDir + @"\TestData\pub.asc";
+        private static readonly string MessagePath = SolutionDir + @"\TestData\original_message.txt";
+        private static readonly string EncryptedMessage = SolutionDir + @"\TestData\encrypted_message.pgp";
 
         private readonly string _privateKey = @"Frends.Community.PgpEncryptFile.Tests\TestData\privatekey.gpg";
         private readonly string _privateKeyPassword = "veijo666";
@@ -21,7 +20,7 @@ namespace Frends.Community.Pgp.Tests
         [TearDown]
         public void DeleteTmpFile()
         {
-            File.Delete(encrypted_message);
+            File.Delete(EncryptedMessage);
         }
 
         [Test]
@@ -29,16 +28,16 @@ namespace Frends.Community.Pgp.Tests
         {
             PgpEncryptInput input = new PgpEncryptInput
             {
-                InputFile = message_path,
-                OutputFile = encrypted_message,
-                PublicKeyFile = public_key_path,
+                InputFile = MessagePath,
+                OutputFile = EncryptedMessage,
+                PublicKeyFile = PublicKeyPath,
                 UseIntegrityCheck = true,
                 UseArmor = true
             };
 
-            PgpEncryptResult result_object = PgpTasks.PgpEncryptFile(input);
+            PgpEncryptResult resultObject = PgpTasks.EncryptFile(input);
 
-            string result = File.ReadAllText(result_object.FilePath);
+            string result = File.ReadAllText(resultObject.FilePath);
 
             string expectedResult = "-----BEGINPGPMESSAGE-----Version:BCPGC#v1.8.6.0hIwDzoB5W4N7pN4B";
              // Rest of the file is random.
@@ -51,9 +50,9 @@ namespace Frends.Community.Pgp.Tests
         {
             var input = new PgpEncryptInput
             {
-                InputFile = message_path,
-                OutputFile = encrypted_message,
-                PublicKeyFile = public_key_path,
+                InputFile = MessagePath,
+                OutputFile = EncryptedMessage,
+                PublicKeyFile = PublicKeyPath,
                 UseArmor = true,
                 UseIntegrityCheck = true,
                 SignWithPrivateKey = true,
@@ -64,7 +63,7 @@ namespace Frends.Community.Pgp.Tests
                 }
             };
 
-            PgpEncryptResult taskResult = PgpTasks.PgpEncryptFile(input);
+            PgpEncryptResult taskResult = PgpTasks.EncryptFile(input);
             string textResult = File.ReadAllText(taskResult.FilePath);
 
             StringAssert.StartsWith($@"-----BEGIN PGP MESSAGE-----
@@ -85,16 +84,16 @@ hIwDzoB5W4N7pN4B", textResult);
             [Values(PgpEncryptCompressionType.BZip2, PgpEncryptCompressionType.Uncompressed, PgpEncryptCompressionType.Zip, PgpEncryptCompressionType.ZLib)]
             PgpEncryptCompressionType compressionType,
             [Values(
-                PgpEncryptSignatureHashAlgorithm.MD2, PgpEncryptSignatureHashAlgorithm.MD5,
-                PgpEncryptSignatureHashAlgorithm.RipeMD160, PgpEncryptSignatureHashAlgorithm.Sha1, PgpEncryptSignatureHashAlgorithm.Sha224, PgpEncryptSignatureHashAlgorithm.Sha256,
+                PgpEncryptSignatureHashAlgorithm.Md2, PgpEncryptSignatureHashAlgorithm.Md5,
+                PgpEncryptSignatureHashAlgorithm.RipeMd160, PgpEncryptSignatureHashAlgorithm.Sha1, PgpEncryptSignatureHashAlgorithm.Sha224, PgpEncryptSignatureHashAlgorithm.Sha256,
                 PgpEncryptSignatureHashAlgorithm.Sha384, PgpEncryptSignatureHashAlgorithm.Sha512)]
             PgpEncryptSignatureHashAlgorithm signatureHash)
         {
             var input = new PgpEncryptInput
             {
-                InputFile = message_path,
-                OutputFile = encrypted_message,
-                PublicKeyFile = public_key_path,
+                InputFile = MessagePath,
+                OutputFile = EncryptedMessage,
+                PublicKeyFile = PublicKeyPath,
                 EncryptionAlgorithm = encryptionAlgorithm,
                 UseCompression = true,
                 CompressionType = compressionType,
@@ -109,7 +108,7 @@ hIwDzoB5W4N7pN4B", textResult);
                 }
             };
 
-            PgpEncryptResult taskResult = PgpTasks.PgpEncryptFile(input);
+            PgpEncryptResult taskResult = PgpTasks.EncryptFile(input);
             string textResult = File.ReadAllText(taskResult.FilePath);
             
             // result has to start with pgp prefix, version comment and almost static 16 chars
@@ -122,9 +121,9 @@ hIwDzoB5W4N7pN4B", textResult);
         {
             var input = new PgpEncryptInput
             {
-                InputFile = message_path,
-                OutputFile = encrypted_message,
-                PublicKeyFile = public_key_path,
+                InputFile = MessagePath,
+                OutputFile = EncryptedMessage,
+                PublicKeyFile = PublicKeyPath,
                 EncryptionAlgorithm = PgpEncryptEncryptionAlgorithm.Cast5,
                 UseArmor = true,
                 UseIntegrityCheck = true,
@@ -138,7 +137,7 @@ hIwDzoB5W4N7pN4B", textResult);
                 }
             };
 
-            PgpEncryptResult taskResult = PgpTasks.PgpEncryptFile(input);
+            PgpEncryptResult taskResult = PgpTasks.EncryptFile(input);
             string textResult = File.ReadAllText(taskResult.FilePath);
 
             // result has to start with pgp prefix, version comment and almost static 16 chars

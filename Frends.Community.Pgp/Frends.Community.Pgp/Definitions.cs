@@ -47,9 +47,9 @@ namespace Frends.Community.Pgp
     /// </summary>
     public enum PgpClearTextSignatureHashFunctionType
     {
-        MD5,
+        Md5,
         Sha1,
-        RipeMD160,
+        RipeMd160,
         Sha224,
         Sha256,
         Sha384,
@@ -243,9 +243,9 @@ namespace Frends.Community.Pgp
     /// </summary>
     public enum PgpEncryptSignatureHashAlgorithm
     {
-        MD2,
-        MD5,
-        RipeMD160,
+        Md2,
+        Md5,
+        RipeMd160,
         Sha1,
         Sha224,
         Sha256,
@@ -293,9 +293,9 @@ namespace Frends.Community.Pgp
     /// </summary>
     public enum PgpSignatureHashFunctionType
     {
-        MD5,
+        Md5,
         Sha1,
-        RipeMD160,
+        RipeMd160,
         Sha224,
         Sha256,
         Sha384,

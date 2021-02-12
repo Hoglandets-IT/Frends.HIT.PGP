@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using System;
 using System.IO;
 using System.Text.RegularExpressions;
 
@@ -12,17 +11,17 @@ namespace Frends.Community.Pgp.Tests
         // following keys should not be used on anything except testing as both private key and password are on public GitHub repository 
         //private readonly static string _solutionDir = Path.GetDirectoryName(Path.GetDirectoryName(TestContext.CurrentContext.TestDirectory));
         //AppDomain.CurrentDomain.SetupInformation.ApplicationBase
-        private readonly static string _solutionDir = "Frends.Community.PgpDecryptFile.Tests";
-        private readonly static string private_key_path = _solutionDir + @"\TestData\sec.asc";
-        private readonly static string encrypted_message = _solutionDir + @"\TestData\encrypted_message.pgp";
-        private readonly static string decrypted_message = _solutionDir + @"\TestData\decrypted_message.pgp";
-        private readonly static string key_password = "kissa2";
+        private static readonly string SolutionDir = "Frends.Community.PgpDecryptFile.Tests";
+        private static readonly string PrivateKeyPath = SolutionDir + @"\TestData\sec.asc";
+        private static readonly string EncryptedMessage = SolutionDir + @"\TestData\encrypted_message.pgp";
+        private static readonly string DecryptedMessage = SolutionDir + @"\TestData\decrypted_message.pgp";
+        private static readonly string KeyPassword = "kissa2";
 
 
         [TearDown]
         public void DeleteTmpFile()
         {
-            File.Delete(decrypted_message);
+            File.Delete(DecryptedMessage);
         }
 
         [Test]
@@ -30,15 +29,15 @@ namespace Frends.Community.Pgp.Tests
         {
             PgpDecryptInput input = new PgpDecryptInput
             {
-                InputFile = encrypted_message,
-                OutputFile = decrypted_message,
-                PrivateKeyFile = private_key_path,
-                PassPhrase = key_password,
+                InputFile = EncryptedMessage,
+                OutputFile = DecryptedMessage,
+                PrivateKeyFile = PrivateKeyPath,
+                PassPhrase = KeyPassword,
             };
 
-            PgpDecryptResult result_object = PgpTasks.PgpDecryptFile(input);
+            PgpDecryptResult resultObject = PgpTasks.DecryptFile(input);
 
-            string result = File.ReadAllText(result_object.FilePath);
+            string result = File.ReadAllText(resultObject.FilePath);
 
             string expectedResult = "\"Secret\" message that contains kanji (漢字) to test utf-8 compatibility.";
 

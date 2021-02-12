@@ -1,6 +1,4 @@
 ﻿using NUnit.Framework;
-using System.IO;
-
 
 
 namespace Frends.Community.Pgp.Tests
@@ -9,22 +7,22 @@ namespace Frends.Community.Pgp.Tests
     class PgpVerifySignatureTests
     {
         // following keys should not be used on anything except testing as both private key and password are on public GitHub repository 
-        private readonly static string _solutionDir = @"Frends.Community.PgpVerifySignature.Tests";
-        private readonly static string public_key_path = _solutionDir + @"\TestData\dontuse-pub.asc";
-        private readonly static string signature = _solutionDir + @"\TestData\signature.txt";
+        private static readonly string _solutionDir = @"Frends.Community.PgpVerifySignature.Tests";
+        private static readonly string _publicKeyPath = _solutionDir + @"\TestData\dontuse-pub.asc";
+        private static readonly string _signature = _solutionDir + @"\TestData\signature.txt";
 
         [Test]
         public void VerifySignOneFileSha1()
         {
             var input = new PgpVerifySignatureInput
             {
-                InputFile = signature,
-                PublicKeyFile = public_key_path,
+                InputFile = _signature,
+                PublicKeyFile = _publicKeyPath,
             };
 
-            PgpVerifySignatureResult result_object = PgpTasks.PgpVerifyFileSignature(input);
+            PgpVerifySignatureResult resultObject = PgpTasks.VerifyFileSignature(input);
 
-            Assert.That(result_object.Verified);
+            Assert.That(resultObject.Verified);
         }
     }
 }

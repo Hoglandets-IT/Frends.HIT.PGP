@@ -1,6 +1,6 @@
 # Frends.Community.Pgp
 
-Frends Community tasks for PGP operations.
+Frends Community tasks for PGP operations. Tasks assumes that files have Windows style line endings (`/r/n`).
 
 [![Actions Status](https://github.com/CommunityHiQ/Frends.Community.Pgp/workflows/PackAndPushAfterMerge/badge.svg)](https://github.com/CommunityHiQ/Frends.Community.Pgp/actions) ![MyGet](https://img.shields.io/myget/frends-community/v/Frends.Community.Pgp) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) 
 
