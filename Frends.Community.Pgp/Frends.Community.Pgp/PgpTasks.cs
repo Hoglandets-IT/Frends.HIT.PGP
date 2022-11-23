@@ -88,6 +88,12 @@ namespace Frends.Community.Pgp
 
             var message = plainFact.NextPgpObject();
 
+            // Some messages start with a signature list, which we need to get over
+            // to get to the actual content of the message. Signature verification
+            // should be done by VerifyFileSignature task.
+            if (message is PgpSignatureList)
+                message = plainFact.NextPgpObject();
+
             switch (message)
             {
                 case PgpCompressedData cData:
