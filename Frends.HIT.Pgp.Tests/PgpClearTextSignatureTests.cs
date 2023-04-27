@@ -12,7 +12,7 @@ namespace Frends.HIT.Pgp.Tests
     class PgpClearTextSignatureTests
     {
         private const string TestData = "TestData";
-        private const string TestFolder = "PgpcleartextsignatureData";
+        private const string TestFolder = "PgpClearTextSignatureData";
         private static readonly string PrivateKeyPath = Path.Combine(TestData, TestFolder, "dontuse-sec.asc");
         private static readonly string PrivateKeyString =
             Environment.GetEnvironmentVariable("PGPCLEARTEXTSIGNATURE_TEST_CERT");
