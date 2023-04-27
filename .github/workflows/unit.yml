@@ -1,0 +1,28 @@
+name: Run Unit Tests
+on:
+  push:
+    branches:
+     - '*'
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  Unit:
+  
+    env:
+      PGPCLEARTEXTSIGNATURE_TEST_CERT: ${{ secrets.PGPCLEARTEXTSIGNATURE_TEST_CERT }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core environment
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.x'
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build project
+      run: dotnet build --configuration Release
+    - name: Run unit tests
+      run: dotnet test --no-restore --verbosity minimal
