@@ -11,6 +11,7 @@ jobs:
   
     env:
       PGPCLEARTEXTSIGNATURE_TEST_CERT: ${{ secrets.PGPCLEARTEXTSIGNATURE_TEST_CERT }}
+      PGPDECRYPT_TEST_CERT: ${{ secrets.PGPDECRYPT_TEST_CERT }}
 
     runs-on: ubuntu-latest
 
