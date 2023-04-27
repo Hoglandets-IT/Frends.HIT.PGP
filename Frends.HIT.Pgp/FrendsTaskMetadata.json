@@ -1,0 +1,23 @@
+﻿{
+	"Tasks": [
+		{
+			"TaskMethod": "Frends.HIT.Pgp.PgpTasks.PgpEncryptFile"
+		},
+		{
+			"TaskMethod": "Frends.HIT.Pgp.PgpTasks.PgpDecryptFile"
+		},
+		{
+			"TaskMethod": "Frends.HIT.Pgp.PgpTasks.PgpSignFile"
+		},
+		{
+			"TaskMethod": "Frends.HIT.Pgp.PgpTasks.PgpVerifyFileSignature"
+		},
+		{
+			"TaskMethod": "Frends.HIT.Pgp.PgpTasks.PgpClearTextSignFile"
+		},
+		{
+			"TaskMethod": "Frends.HIT.Pgp.PgpTasks.PgpVerifyFileClearTextSignature"
+		},
+
+	]
+}
