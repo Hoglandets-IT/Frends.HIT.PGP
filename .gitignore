@@ -240,3 +240,6 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+
+# Console Test app
+Frends.HIT.Pgp.TestRunner/
