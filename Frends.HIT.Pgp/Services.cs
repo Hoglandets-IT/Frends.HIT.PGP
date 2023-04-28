@@ -210,8 +210,9 @@ namespace Frends.HIT.Pgp
         /// <returns>Encryption chained stream</returns>
         internal static Stream GetEncryptionStream(Stream stream, PgpEncryptInput input)
         {
+            var publicKeyStream = PgpKeystream.GetPublicKeyStream(input);
             SymmetricKeyAlgorithmTag algorithmTag = input.EncryptionAlgorithm.ConvertEnum<SymmetricKeyAlgorithmTag>();
-            PgpPublicKey publicKey = ReadPublicKey(input.PublicKeyFile);
+            PgpPublicKey publicKey = ReadPublicKey(publicKeyStream);
             PgpEncryptedDataGenerator encryptedDataGenerator = new PgpEncryptedDataGenerator(algorithmTag, input.UseIntegrityCheck, new SecureRandom());
             encryptedDataGenerator.AddMethod(publicKey);
             return encryptedDataGenerator.Open(stream, new byte[PgpTasks.EncryptBufferSize]);
@@ -237,12 +238,12 @@ namespace Frends.HIT.Pgp
         /// <summary>
         /// Find first suitable public key for encryption.
         /// </summary>
-        /// <param name="publicKeyFile">Path to public key file</param>
+        /// <param name="publicKeyStream"></param>
         /// <returns>PgpPublicKey from public key file location</returns>
-        internal static PgpPublicKey ReadPublicKey(string publicKeyFile)
+        internal static PgpPublicKey ReadPublicKey(Stream publicKeyStream)
         {
-            using (Stream publicKeyStream = File.OpenRead(publicKeyFile))
-            using (Stream decoderStream = PgpUtilities.GetDecoderStream(publicKeyStream))
+            using (Stream publicKey = publicKeyStream)
+            using (Stream decoderStream = PgpUtilities.GetDecoderStream(publicKey))
             {
                 PgpPublicKeyRingBundle pgpPub = new PgpPublicKeyRingBundle(decoderStream);
 
@@ -267,10 +268,10 @@ namespace Frends.HIT.Pgp
         internal static PgpSignatureGenerator InitPgpSignatureGenerator(Stream stream, PgpEncryptInput input)
         {
             HashAlgorithmTag hashAlgorithm = input.SigningSettings.SignatureHashAlgorithm.ConvertEnum<HashAlgorithmTag>();
-
+            var privateKeyStream = PgpKeystream.GetPrivateKeyStream(input.SigningSettings);
             try
             {
-                PgpSecretKey secretKey = ReadSecretKey(input.SigningSettings.PrivateKeyFile);
+                PgpSecretKey secretKey = ReadSecretKey(privateKeyStream);
                 PgpPrivateKey privateKey = secretKey.ExtractPrivateKey(input.SigningSettings.PrivateKeyPassword.ToCharArray());
 
                 var pgpSignatureGenerator = new PgpSignatureGenerator(secretKey.PublicKey.Algorithm, hashAlgorithm);
