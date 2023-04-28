@@ -191,7 +191,7 @@ namespace Frends.HIT.Pgp
     /// <summary>
     /// Settings related to signing
     /// </summary>
-    public class PgpEncryptSigningSettings
+    public class PgpEncryptSigningSettings : IHasPrivateKey
     {
         /// <summary>
         /// Path to private key to sign with
@@ -199,7 +199,12 @@ namespace Frends.HIT.Pgp
         [DefaultValue(@"C:\temp\privateKeyFile.gpg")]
         [DisplayFormat(DataFormatString = "Text")]
         public string PrivateKeyFile { get; set; }
-
+        /// <summary>
+        /// Private key string to sign with
+        /// </summary>
+        [DefaultValue(@"")]
+        [DisplayFormat(DataFormatString = "Text")]
+        public string PrivateKey { get; set; }
         /// <summary>
         /// If the file should be signed with private key then password to private key has to be offered
         /// </summary>
