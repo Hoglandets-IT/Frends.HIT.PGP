@@ -1,3 +1,4 @@
+name: Build And Push
 on:
   push:
     paths: ['Frends.HIT.SecureEnelope/**', '.github/workflows/on-push-pullreq.yml']
