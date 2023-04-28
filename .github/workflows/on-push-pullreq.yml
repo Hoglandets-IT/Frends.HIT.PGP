@@ -1,0 +1,26 @@
+on:
+  push:
+    paths: ['Frends.HIT.SecureEnelope/**', '.github/workflows/on-push-pullreq.yml']
+    branches: [master]
+  pull_request:
+    paths: ['Frends.HIT.SecureEnelope/**', '.github/workflows/on-push-pullreq.yml']
+    branches: ['master']
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+    - name: Build and publish
+      uses: hoglandets-it/gha-dotnet-builder@main
+      with:
+        buildShell: bash
+        buildVersion: VERSION
+        incrementVersion: patch
+        incrementVersionWriteback: "true"
+        writebackName: "AutoPush"
+        writebackEmail: "developer@hoglan.dev"
+        buildConfiguration: "Release"
+        includeSource: "true"
+        packageFeedUrl: ${{ secrets.FRENDS_NUGET_FEED_URL }}
+        packageFeedSecret: ${{ secrets.FRENDS_NUGET_FEED_KEY }}
