@@ -2,7 +2,7 @@
 
 Frends HIT tasks for PGP operations. Tasks assumes that files have Windows style line endings (`/r/n`).
 
-[![Run Unit Tests](https://github.com/Hoglandets-IT/Frends.HIT.Pgp/actions/workflows/unit.yml/badge.svg)](https://github.com/Hoglandets-IT/Frends.HIT.Pgp/actions/workflows/unit.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) 
+[![Run Unit Tests](https://github.com/Hoglandets-IT/Frends.HIT.Pgp/actions/workflows/unit.yml/badge.svg)](https://github.com/Hoglandets-IT/Frends.HIT.Pgp/actions/workflows/unit.yml) [![.github/workflows/on-push-pullreq.yml](https://github.com/Hoglandets-IT/Frends.HIT.Pgp/actions/workflows/on-push-pullreq.yml/badge.svg)](https://github.com/Hoglandets-IT/Frends.HIT.Pgp/actions/workflows/on-push-pullreq.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) 
 
 
 # Installing
