@@ -12,7 +12,7 @@ namespace Frends.HIT.Pgp.Tests
         private const string TestData = "TestData";
         private const string TestFolder = "PgpVerifySignatureData";
         private static readonly string PublicKeyString =
-            Environment.GetEnvironmentVariable("PGPDECRYPT_TEST_CERT");
+            Environment.GetEnvironmentVariable("PGPVERIFYSIGNATURE_TEST_CERT");
         private static readonly string PublicKeyPath = Path.Combine(TestData, TestFolder, "dontuse-pub.asc");
         private static readonly string Signature = Path.Combine(TestData, TestFolder, "signature.txt");
 
