@@ -8,7 +8,7 @@ namespace Frends.HIT.Pgp
         /// <summary>
         /// Public key as a string
         /// </summary>
-        [DefaultValue(@"")] 
+        [DefaultValue(@"/NO/PATH")] 
         [DisplayFormat(DataFormatString = "Text")]
         string PublicKey { get; set; }
         /// <summary>
