@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -8,9 +7,8 @@ using System.ComponentModel.DataAnnotations;
 namespace Frends.HIT.Pgp
 {
     
-
     #region PgpClearTextSignature
-    public class PgpClearTextSignatureInput : IHasPrivateKey
+    public class PgpClearTextSignatureInput 
     {
         /// <summary>
         /// Path to file being signed.
@@ -19,11 +17,23 @@ namespace Frends.HIT.Pgp
         [DisplayFormat(DataFormatString = "Text")]
         public string InputFile { get; set; }
         /// <summary>
+        /// String to being signed.
+        /// </summary>
+        [DefaultValue(@"")]
+        [DisplayFormat(DataFormatString = "Text")]
+        public string InputString { get; set; }
+        /// <summary>
         /// Path to signed file that will be created.
         /// </summary>
         [DefaultValue(@"C:\temp\encryptedFile.pgp")]
         [DisplayFormat(DataFormatString = "Text")]
         public string OutputFile { get; set; }
+        /// <summary>
+        /// String to signed that will be created.
+        /// </summary>
+        [DefaultValue(@"")]
+        [DisplayFormat(DataFormatString = "Text")]
+        public string Output { get; set; }
         /// <summary>
         /// Path to private key file.
         /// </summary>
@@ -69,13 +79,13 @@ namespace Frends.HIT.Pgp
         /// <summary>
         /// Result class.
         /// </summary>
-        public string FilePath { get; set; }
+        public string Output { get; set; }
     }
     #endregion
 
     #region PgpDecryptFile
 
-    public class PgpDecryptInput : IHasPrivateKey
+    public class PgpDecryptInput 
     {
         /// <summary>
         /// Path to file to decrypt.
@@ -84,11 +94,23 @@ namespace Frends.HIT.Pgp
         [DisplayFormat(DataFormatString = "Text")]
         public string InputFile { get; set; }
         /// <summary>
+        /// String to decrypt.
+        /// </summary>
+        [DefaultValue(@"C:\temp\encryptedFile.pgp")]
+        [DisplayFormat(DataFormatString = "Text")]
+        public string InputString { get; set; }
+        /// <summary>
         /// Path to file that will be create.
         /// </summary>
         [DefaultValue(@"C:\temp\decrypted_file.txt")]
         [DisplayFormat(DataFormatString = "Text")]
         public string OutputFile { get; set; }
+        /// <summary>
+        /// String will be create.
+        /// </summary>
+        [DefaultValue(@"C:\temp\decrypted_file.txt")]
+        [DisplayFormat(DataFormatString = "Text")]
+        public string Output { get; set; }
         /// <summary>
         /// Private key used to decrypt file.
         /// </summary>
@@ -113,7 +135,7 @@ namespace Frends.HIT.Pgp
         /// <summary>
         /// Result class.
         /// </summary>
-        public string FilePath { get; set; }
+        public string Output { get; set; }
     }
 
     #endregion
@@ -122,7 +144,7 @@ namespace Frends.HIT.Pgp
     /// <summary>
     /// Input for Encrypt task
     /// </summary>
-    public class PgpEncryptInput : IHasPublicKey
+    public class PgpEncryptInput 
     {
         /// <summary>
         /// Path to file being encrypted.
@@ -131,11 +153,23 @@ namespace Frends.HIT.Pgp
         [DisplayFormat(DataFormatString = "Text")]
         public string InputFile { get; set; }
         /// <summary>
+        /// String to being encrypted.
+        /// </summary>
+        [DefaultValue(@"")]
+        [DisplayFormat(DataFormatString = "Text")]
+        public string InputString { get; set; }
+        /// <summary>
         /// Path to encrypted file that will be create.
         /// </summary>
         [DefaultValue(@"C:\temp\encryptedFile.pgp")]
         [DisplayFormat(DataFormatString = "Text")]
         public string OutputFile { get; set; }
+        /// <summary>
+        /// Encrypted string that will be create.
+        /// </summary>
+        [DefaultValue(@"")]
+        [DisplayFormat(DataFormatString = "Text")]
+        public string Output { get; set; }
         /// <summary>
         /// Path to recipients public key.
         /// </summary>
@@ -191,7 +225,7 @@ namespace Frends.HIT.Pgp
     /// <summary>
     /// Settings related to signing
     /// </summary>
-    public class PgpEncryptSigningSettings : IHasPrivateKey
+    public class PgpEncryptSigningSettings 
     {
         /// <summary>
         /// Path to private key to sign with
@@ -223,7 +257,7 @@ namespace Frends.HIT.Pgp
     /// </summary>
     public class PgpEncryptResult
     {
-        public string FilePath { get; set; }
+        public string Output { get; set; }
     }
 
     /// <summary>
@@ -273,7 +307,7 @@ namespace Frends.HIT.Pgp
     #endregion
 
     #region PgpSignature
-    public class PgpSignatureInput : IHasPrivateKey
+    public class PgpSignatureInput 
     {
         /// <summary>
         /// Path to file to sign.
@@ -282,11 +316,23 @@ namespace Frends.HIT.Pgp
         [DisplayFormat(DataFormatString = "Text")]
         public string InputFile { get; set; }
         /// <summary>
+        /// String to sign.
+        /// </summary>
+        [DefaultValue(@"C:\temp\message.txt")]
+        [DisplayFormat(DataFormatString = "Text")]
+        public string InputString { get; set; }
+        /// <summary>
         /// Path to signed file that will be created.
         /// </summary>
         [DefaultValue(@"C:\temp\signature.txt")]
         [DisplayFormat(DataFormatString = "Text")]
         public string OutputFile { get; set; }
+        /// <summary>
+        /// Signed string that will be created.
+        /// </summary>
+        [DefaultValue(@"C:\temp\signature.txt")]
+        [DisplayFormat(DataFormatString = "Text")]
+        public string Output { get; set; }
         /// <summary>
         /// Path to private key file.
         /// </summary>
@@ -332,7 +378,7 @@ namespace Frends.HIT.Pgp
         /// <summary>
         /// Result class.
         /// </summary>
-        public string FilePath { get; set; }
+        public string Output { get; set; }
     }
 
 
@@ -340,7 +386,7 @@ namespace Frends.HIT.Pgp
 
 
 # region PgpVerifyClearTextSignature
-    public class PgpVerifyClearTextSignatureInput : IHasPublicKey
+    public class PgpVerifyClearTextSignatureInput 
     {
         /// <summary>
         /// Path to file to verify.
@@ -348,6 +394,12 @@ namespace Frends.HIT.Pgp
         [DefaultValue(@"C:\temp\message.txt")]
         [DisplayFormat(DataFormatString = "Text")]
         public string InputFile { get; set; }
+        /// <summary>
+        /// String to verify.
+        /// </summary>
+        [DefaultValue(@"")]
+        [DisplayFormat(DataFormatString = "Text")]
+        public string InputString { get; set; }
         /// <summary>
         /// Path to public key file.
         /// </summary>
@@ -366,7 +418,12 @@ namespace Frends.HIT.Pgp
         [DefaultValue(@"C:\temp\message_out.txt")]
         [DisplayFormat(DataFormatString = "Text")]
         public string OutputFile { get; set; }
-
+        /// <summary>
+        /// String for verified result.
+        /// </summary>
+        [DefaultValue(@"C:\temp\message_out.txt")]
+        [DisplayFormat(DataFormatString = "Text")]
+        public string Output { get; set; }
     }
 
     public class PgpVerifyClearTextSignatureResult
@@ -374,7 +431,7 @@ namespace Frends.HIT.Pgp
         /// <summary>
         /// Path to verified file.
         /// </summary>
-        public string FilePath { get; set; }
+        public string Output { get; set; }
         /// <summary>
         /// False if verification fails
         /// </summary>
@@ -385,7 +442,7 @@ namespace Frends.HIT.Pgp
     #endregion
 
     #region PgpVerifySignature
-    public class PgpVerifySignatureInput : IHasPublicKey
+    public class PgpVerifySignatureInput 
     {
         /// <summary>
         /// Path to signed file.
@@ -393,6 +450,12 @@ namespace Frends.HIT.Pgp
         [DefaultValue(@"C:\temp\message.txt")]
         [DisplayFormat(DataFormatString = "Text")]
         public string InputFile { get; set; }
+        /// <summary>
+        /// String to signed.
+        /// </summary>
+        [DefaultValue(@"")]
+        [DisplayFormat(DataFormatString = "Text")]
+        public string InputString { get; set; }
         /// <summary>
         /// Path to public key file.
         /// </summary>
@@ -412,6 +475,17 @@ namespace Frends.HIT.Pgp
         [DefaultValue(@"")]
         [DisplayFormat(DataFormatString = "Text")]
         public string OutputFolder { get; set; }
+        /// <summary>
+        /// OutPut
+        /// </summary>
+        [DefaultValue(@"")]
+        [DisplayFormat(DataFormatString = "Text")]
+        public string Output { get; set; }
+        /// <summary>
+        /// Save as file
+        /// </summary>
+        [DefaultValue("false")]
+        public Boolean SaveFile { get; set; }
     }
     public class PgpVerifySignatureResult
     {

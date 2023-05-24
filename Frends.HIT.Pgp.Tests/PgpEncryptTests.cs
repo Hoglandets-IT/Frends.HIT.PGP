@@ -42,7 +42,7 @@ namespace Frends.HIT.Pgp.Tests
 
             PgpEncryptResult resultObject = PgpTasks.EncryptFile(input);
 
-            string result = File.ReadAllText(resultObject.FilePath);
+            string result = resultObject.Output;
 
             string expectedResult = "-----BEGINPGPMESSAGE-----";
              // Rest of the file is random.
@@ -64,7 +64,7 @@ namespace Frends.HIT.Pgp.Tests
 
             PgpEncryptResult resultObject = PgpTasks.EncryptFile(input);
 
-            string result = File.ReadAllText(resultObject.FilePath);
+            string result = resultObject.Output;
 
             string expectedResult = "-----BEGINPGPMESSAGE-----";
             // Rest of the file is random.
@@ -91,7 +91,7 @@ namespace Frends.HIT.Pgp.Tests
             };
 
             PgpEncryptResult taskResult = PgpTasks.EncryptFile(input);
-            string textResult = File.ReadAllText(taskResult.FilePath);
+            string textResult = taskResult.Output;
 
             StringAssert.StartsWith($@"-----BEGIN PGP MESSAGE-----", textResult);
             StringAssert.EndsWith($"-----END PGP MESSAGE-----{Environment.NewLine}", textResult);
@@ -116,7 +116,7 @@ namespace Frends.HIT.Pgp.Tests
             };
 
             PgpEncryptResult taskResult = PgpTasks.EncryptFile(input);
-            string textResult = File.ReadAllText(taskResult.FilePath);
+            string textResult = taskResult.Output;
 
             StringAssert.StartsWith($@"-----BEGIN PGP MESSAGE-----", textResult);
             StringAssert.EndsWith($"-----END PGP MESSAGE-----{Environment.NewLine}", textResult);
@@ -158,7 +158,7 @@ namespace Frends.HIT.Pgp.Tests
             };
 
             PgpEncryptResult taskResult = PgpTasks.EncryptFile(input);
-            string textResult = File.ReadAllText(taskResult.FilePath);
+            string textResult = taskResult.Output;
             
             // result has to start with pgp prefix, version comment and almost static 16 chars
             StringAssert.IsMatch(@"-----BEGIN PGP MESSAGE-----", textResult);
@@ -201,7 +201,7 @@ namespace Frends.HIT.Pgp.Tests
             };
 
             PgpEncryptResult taskResult = PgpTasks.EncryptFile(input);
-            string textResult = File.ReadAllText(taskResult.FilePath);
+            string textResult = taskResult.Output;
             
             // result has to start with pgp prefix, version comment and almost static 16 chars
             StringAssert.IsMatch(@"-----BEGIN PGP MESSAGE-----", textResult);
@@ -230,7 +230,7 @@ namespace Frends.HIT.Pgp.Tests
             };
 
             PgpEncryptResult taskResult = PgpTasks.EncryptFile(input);
-            string textResult = File.ReadAllText(taskResult.FilePath);
+            string textResult = taskResult.Output;
 
             // result has to start with pgp prefix, version comment and almost static 16 chars
             StringAssert.IsMatch(@"-----BEGIN PGP MESSAGE-----", textResult);
@@ -259,7 +259,7 @@ namespace Frends.HIT.Pgp.Tests
             };
 
             PgpEncryptResult taskResult = PgpTasks.EncryptFile(input);
-            string textResult = File.ReadAllText(taskResult.FilePath);
+            string textResult = taskResult.Output;
 
             // result has to start with pgp prefix, version comment and almost static 16 chars
             StringAssert.IsMatch(@"-----BEGIN PGP MESSAGE-----", textResult);

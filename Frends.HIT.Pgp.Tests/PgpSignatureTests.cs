@@ -34,7 +34,7 @@ namespace Frends.HIT.Pgp.Tests
 
             PgpSignatureResult resultObject = PgpTasks.SignFile(input);
 
-            string result = File.ReadAllText(resultObject.FilePath);
+            string result = resultObject.Output;
 
             string expectedResult = "-----BEGINPGPMESSAGE-----Version:BCPGC#v1.8.6.0kA0DAAIBQmrabh8os";
             // Rest of the file is random.
@@ -57,7 +57,7 @@ namespace Frends.HIT.Pgp.Tests
 
             PgpSignatureResult resultObject = PgpTasks.SignFile(input);
 
-            string result = File.ReadAllText(resultObject.FilePath);
+            string result = File.ReadAllText(resultObject.Output);
 
             string expectedResult = "-----BEGINPGPMESSAGE-----Version:BCPGC#v1.8.6.0kA0DAAIBQmrabh8os";
             // Rest of the file is random.

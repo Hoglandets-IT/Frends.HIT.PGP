@@ -41,7 +41,7 @@ namespace Frends.HIT.Pgp.Tests
 
             PgpDecryptResult resultObject = PgpTasks.DecryptFile(input);
 
-            string result = File.ReadAllText(resultObject.FilePath);
+            string result = resultObject.Output;
 
             string expectedResult = "\"Secret\" message that contains kanji (漢字) to test utf-8 compatibility.";
 
@@ -61,7 +61,7 @@ namespace Frends.HIT.Pgp.Tests
 
             PgpDecryptResult resultObject = PgpTasks.DecryptFile(input);
 
-            string result = File.ReadAllText(resultObject.FilePath);
+            string result = File.ReadAllText(resultObject.Output);
 
             string expectedResult = "\"Secret\" message that contains kanji (漢字) to test utf-8 compatibility.";
 
