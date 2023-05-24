@@ -2,7 +2,8 @@
 using NUnit.Framework;
 using System.IO;
 using System.Text.RegularExpressions;
-
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Assert = NUnit.Framework.Assert;
 
 
 namespace Frends.HIT.Pgp.Tests
@@ -19,6 +20,13 @@ namespace Frends.HIT.Pgp.Tests
         private static readonly string Signature = Path.Combine(TestData, TestFolder, "signature.txt");
         private static readonly string MessagePath = Path.Combine(TestData, TestFolder, "original_message.txt");
         private static readonly string KeyPassword = "testisalasana1";
+        private static string _messageString;
+
+        [TestInitialize]
+        public void Setup()
+        {
+            _messageString = File.ReadAllText(MessagePath);
+        }
 
         [Test]
         public void SignOneFileSha1PrivateKeyFile()
@@ -48,7 +56,7 @@ namespace Frends.HIT.Pgp.Tests
         {
             PgpSignatureInput input = new PgpSignatureInput
             {
-                InputFile = MessagePath,
+                InputString = _messageString,
                 OutputFile = Signature,
                 PrivateKey = PrivateKeyString,
                 Password = KeyPassword,
@@ -57,7 +65,7 @@ namespace Frends.HIT.Pgp.Tests
 
             PgpSignatureResult resultObject = PgpTasks.SignFile(input);
 
-            string result = File.ReadAllText(resultObject.Output);
+            string result = resultObject.Output;
 
             string expectedResult = "-----BEGINPGPMESSAGE-----Version:BCPGC#v1.8.6.0kA0DAAIBQmrabh8os";
             // Rest of the file is random.

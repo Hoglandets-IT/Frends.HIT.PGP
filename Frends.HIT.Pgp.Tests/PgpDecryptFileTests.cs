@@ -2,6 +2,8 @@
 using NUnit.Framework;
 using System.IO;
 using System.Text.RegularExpressions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Assert = NUnit.Framework.Assert;
 
 
 namespace Frends.HIT.Pgp.Tests
@@ -20,8 +22,14 @@ namespace Frends.HIT.Pgp.Tests
         private static readonly string EncryptedMessage = Path.Combine(TestData, TestFolder, "encrypted_message.pgp");
         private static readonly string DecryptedMessage = Path.Combine(TestData, TestFolder, "decrypted_message.pgp");
         private static readonly string KeyPassword = "kissa2";
+        private static string _encryptedString;
 
-
+        [TestInitialize]
+        public void Setup()
+        {
+            _encryptedString = File.ReadAllText(EncryptedMessage);
+        }
+        
         [TearDown]
         public void DeleteTmpFile()
         {
@@ -53,7 +61,7 @@ namespace Frends.HIT.Pgp.Tests
         {
             PgpDecryptInput input = new PgpDecryptInput
             {
-                InputFile = EncryptedMessage,
+                InputString = _encryptedString,
                 OutputFile = DecryptedMessage,
                 PrivateKey = PrivateKeyString,
                 PassPhrase = KeyPassword,
@@ -61,7 +69,7 @@ namespace Frends.HIT.Pgp.Tests
 
             PgpDecryptResult resultObject = PgpTasks.DecryptFile(input);
 
-            string result = File.ReadAllText(resultObject.Output);
+            string result = resultObject.Output;
 
             string expectedResult = "\"Secret\" message that contains kanji (漢字) to test utf-8 compatibility.";
 
