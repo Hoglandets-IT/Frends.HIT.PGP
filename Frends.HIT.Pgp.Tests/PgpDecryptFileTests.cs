@@ -2,7 +2,6 @@
 using NUnit.Framework;
 using System.IO;
 using System.Text.RegularExpressions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Assert = NUnit.Framework.Assert;
 
 
@@ -24,7 +23,7 @@ namespace Frends.HIT.Pgp.Tests
         private static readonly string KeyPassword = "kissa2";
         private static string _encryptedString;
 
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             _encryptedString = File.ReadAllText(EncryptedMessage);
@@ -67,11 +66,13 @@ namespace Frends.HIT.Pgp.Tests
                 PassPhrase = KeyPassword,
             };
 
-            PgpDecryptResult resultObject = PgpTasks.DecryptFile(input);
+            var test = _encryptedString;
 
-            string result = resultObject.Output;
+            var resultObject = PgpTasks.DecryptFile(input);
 
-            string expectedResult = "\"Secret\" message that contains kanji (漢字) to test utf-8 compatibility.";
+            var result = resultObject.Output;
+
+            var expectedResult = "\"Secret\" message that contains kanji (漢字) to test utf-8 compatibility.";
 
             Assert.That(Regex.Replace(result, @"[\s+]", ""), Does.StartWith(Regex.Replace(expectedResult, @"[\s+]", "")));
         }

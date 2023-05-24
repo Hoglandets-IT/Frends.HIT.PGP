@@ -2,9 +2,7 @@
 using NUnit.Framework;
 using System.IO;
 using System.Text.RegularExpressions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Assert = NUnit.Framework.Assert;
-
 
 namespace Frends.HIT.Pgp.Tests
 {
@@ -22,7 +20,7 @@ namespace Frends.HIT.Pgp.Tests
         private static readonly string KeyPassword = "testisalasana1";
         private static string _messageString;
 
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             _messageString = File.ReadAllText(MessagePath);
