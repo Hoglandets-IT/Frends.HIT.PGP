@@ -52,7 +52,6 @@ namespace Frends.HIT.Pgp.Tests
         [Test]
         public void SignOneFileSha1PrivateKeyString()
         {
-            TestContext.WriteLine($"privateKeystring: {string.IsNullOrEmpty(PrivateKeyString)}");
             PgpSignatureInput input = new PgpSignatureInput
             {
                 InputString = _messageString,

@@ -17,7 +17,7 @@ public class VerifyClearTextSignatureHandler
         InputFile = ModifyPathForOperatingSystem(input.InputFile);
         InputString = input.InputString;
         PublicKeyFile = ModifyPathForOperatingSystem(input.PublicKeyFile);
-        PublicKey = PublicKey;
+        PublicKey = input.PublicKey;
         OutputFile = ModifyPathForOperatingSystem(input.OutputFile);
         Output = input.Output;
     }
