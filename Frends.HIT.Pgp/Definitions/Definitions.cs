@@ -108,7 +108,7 @@ namespace Frends.HIT.Pgp
         /// <summary>
         /// String will be create.
         /// </summary>
-        [DefaultValue(@"C:\temp\decrypted_file.txt")]
+        [DefaultValue(@"")]
         [DisplayFormat(DataFormatString = "Text")]
         public string Output { get; set; }
         /// <summary>
@@ -492,7 +492,7 @@ namespace Frends.HIT.Pgp
         /// <summary>
         /// Path to verified file.
         /// </summary>
-        public string FilePath { get; set; }
+        public string Output { get; set; }
         /// <summary>
         /// False if verification fails
         /// </summary>
