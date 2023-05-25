@@ -57,7 +57,7 @@ namespace Frends.HIT.Pgp.Tests
 
             PgpClearTextSignatureResult resultObject = PgpTasks.ClearTextSignFile(input);
 
-            string result = File.ReadAllText(resultObject.Output);
+            string result = resultObject.Output;
 
             string expectedResult = "-----BEGINPGPSIGNEDMESSAGE-----Hash:SHA1\"Secret\"messagethatcontainskanji(漢字)totestutf-8compatibility.-----BEGINPGPSIGNATURE-----Version:BCPGC#v1.8.6.0iQE0BAEBAgAeBQ";
             // Rest of the file is random.

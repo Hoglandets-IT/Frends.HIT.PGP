@@ -330,7 +330,7 @@ namespace Frends.HIT.Pgp
         /// <summary>
         /// Signed string that will be created.
         /// </summary>
-        [DefaultValue(@"C:\temp\signature.txt")]
+        [DefaultValue(@"")]
         [DisplayFormat(DataFormatString = "Text")]
         public string Output { get; set; }
         /// <summary>
