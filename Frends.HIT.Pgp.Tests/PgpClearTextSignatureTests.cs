@@ -19,6 +19,13 @@ namespace Frends.HIT.Pgp.Tests
         private static readonly string SignedMessage = Path.Combine(TestData, TestFolder, "signed_message.txt");
         private static readonly string MessagePath = Path.Combine(TestData, TestFolder, "original_message.txt");
         private static readonly string KeyPassword = "testisalasana1";
+        private string _userInputString;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _userInputString = File.ReadAllText(MessagePath);
+        }
 
         [Test]
         public void SignOneFileSha1PrivateKeyFile()
@@ -32,11 +39,11 @@ namespace Frends.HIT.Pgp.Tests
                 HashFunction = PgpClearTextSignatureHashFunctionType.Sha1,
             };
 
-            PgpClearTextSignatureResult resultObject = PgpTasks.ClearTextSignFile(input);
+            var resultObject = PgpTasks.ClearTextSignFile(input);
 
-            string result = File.ReadAllText(resultObject.FilePath);
+            var result = resultObject.Output;
 
-            string expectedResult = "-----BEGINPGPSIGNEDMESSAGE-----Hash:SHA1\"Secret\"messagethatcontainskanji(漢字)totestutf-8compatibility.-----BEGINPGPSIGNATURE-----Version:BCPGC#v1.8.6.0iQE0BAEBAgAeBQ";
+            var expectedResult = "-----BEGINPGPSIGNEDMESSAGE-----Hash:SHA1\"Secret\"messagethatcontainskanji(漢字)totestutf-8compatibility.-----BEGINPGPSIGNATURE-----Version:BCPGC#v1.8.6.0iQE0BAEBAgAeBQ";
             // Rest of the file is random.
 
             Assert.That(Regex.Replace(result, @"[\s+]", ""), Does.StartWith(Regex.Replace(expectedResult, @"[\s+]", "")));
@@ -55,11 +62,57 @@ namespace Frends.HIT.Pgp.Tests
                 HashFunction = PgpClearTextSignatureHashFunctionType.Sha1,
             };
 
-            PgpClearTextSignatureResult resultObject = PgpTasks.ClearTextSignFile(input);
+            var resultObject = PgpTasks.ClearTextSignFile(input);
 
-            string result = File.ReadAllText(resultObject.FilePath);
+            var result = resultObject.Output;
 
-            string expectedResult = "-----BEGINPGPSIGNEDMESSAGE-----Hash:SHA1\"Secret\"messagethatcontainskanji(漢字)totestutf-8compatibility.-----BEGINPGPSIGNATURE-----Version:BCPGC#v1.8.6.0iQE0BAEBAgAeBQ";
+            var expectedResult = "-----BEGINPGPSIGNEDMESSAGE-----Hash:SHA1\"Secret\"messagethatcontainskanji(漢字)totestutf-8compatibility.-----BEGINPGPSIGNATURE-----Version:BCPGC#v1.8.6.0iQE0BAEBAgAeBQ";
+            // Rest of the file is random.
+
+            Assert.That(Regex.Replace(result, @"[\s+]", ""), Does.StartWith(Regex.Replace(expectedResult, @"[\s+]", "")));
+
+        }
+        
+        [Test]
+        public void SignOneFileSha1PrivateKeyFileAndUserInput()
+        {
+            PgpClearTextSignatureInput input = new PgpClearTextSignatureInput
+            {
+                InputString = _userInputString,
+                OutputFile = SignedMessage,
+                PrivateKeyFile = PrivateKeyPath,
+                Password = KeyPassword,
+                HashFunction = PgpClearTextSignatureHashFunctionType.Sha1,
+            };
+
+            var resultObject = PgpTasks.ClearTextSignFile(input);
+
+            var result = resultObject.Output;
+
+            var expectedResult = "-----BEGINPGPSIGNEDMESSAGE-----Hash:SHA1\"Secret\"messagethatcontainskanji(漢字)totestutf-8compatibility.-----BEGINPGPSIGNATURE-----Version:BCPGC#v1.8.6.0iQE0BAEBAgAeBQ";
+            // Rest of the file is random.
+
+            Assert.That(Regex.Replace(result, @"[\s+]", ""), Does.StartWith(Regex.Replace(expectedResult, @"[\s+]", "")));
+
+        }
+        
+        [Test]
+        public void SignOneFileSha1PrivateKeyStringAndUserInput()
+        {
+            PgpClearTextSignatureInput input = new PgpClearTextSignatureInput
+            {
+                InputString = _userInputString,
+                OutputFile = SignedMessage,
+                PrivateKey = PrivateKeyString,
+                Password = KeyPassword,
+                HashFunction = PgpClearTextSignatureHashFunctionType.Sha1,
+            };
+
+            var resultObject = PgpTasks.ClearTextSignFile(input);
+
+            var result = resultObject.Output;
+
+            var expectedResult = "-----BEGINPGPSIGNEDMESSAGE-----Hash:SHA1\"Secret\"messagethatcontainskanji(漢字)totestutf-8compatibility.-----BEGINPGPSIGNATURE-----Version:BCPGC#v1.8.6.0iQE0BAEBAgAeBQ";
             // Rest of the file is random.
 
             Assert.That(Regex.Replace(result, @"[\s+]", ""), Does.StartWith(Regex.Replace(expectedResult, @"[\s+]", "")));

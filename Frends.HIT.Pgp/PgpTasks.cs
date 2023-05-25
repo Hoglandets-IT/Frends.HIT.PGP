@@ -4,6 +4,7 @@ using System.IO;
 using Org.BouncyCastle.Bcpg;
 using Org.BouncyCastle.Utilities.IO;
 using System.Text;
+using Frends.HIT.Pgp.Handlers;
 
 #pragma warning disable 1591
 
@@ -21,34 +22,27 @@ namespace Frends.HIT.Pgp
         /// </summary>
         public static PgpDecryptResult DecryptFile(PgpDecryptInput input)
         {
-            if (!File.Exists(input.InputFile))
-                throw new FileNotFoundException($"Encrypted File [{input.InputFile}] not found.");
+            DecryptHandler decryptHandler = new DecryptHandler(input);
 
-            if (string.IsNullOrEmpty(input.OutputFile))
-                throw new ArgumentNullException(input.OutputFile);
-
-            var privateKeyStream = PgpKeystream.GetPrivateKeyStream(input);
-
-            using (var inputStream = File.OpenRead(input.InputFile))
+            using (var inputStream = decryptHandler.InputStream())
             {
-                using (var keyIn = privateKeyStream)
+                using (var keyIn = decryptHandler.KeyStream())
                 {
-                    Decrypt(inputStream, keyIn, input.PassPhrase, input.OutputFile);
+                    Decrypt(inputStream, keyIn, decryptHandler.PassPhrase, out var output);
+                    decryptHandler.Output = output;
                 }
             }
-            var ret = new PgpDecryptResult
+            return new PgpDecryptResult
             {
-                FilePath = input.OutputFile
+                Output = decryptHandler.Output
             };
-
-            return ret;
         }
 
 
 
 
 
-        internal static bool Decrypt(Stream inputStream, Stream privateKeyStream, string passPhrase, string outputFile)
+        internal static bool Decrypt(Stream inputStream, Stream privateKeyStream, string passPhrase, out string output)
         {
             PgpPrivateKey sKey = null;
             PgpPublicKeyEncryptedData pbe = null;
@@ -108,19 +102,25 @@ namespace Frends.HIT.Pgp
                     {
                         message = of.NextPgpObject();
                         var ld = (PgpLiteralData)message;
-                        using (var output = File.Create(outputFile))
+                        using (var outputStream = new MemoryStream())
                         {
                             var unc = ld.GetInputStream();
-                            Streams.PipeAll(unc, output);
+                            Streams.PipeAll(unc, outputStream);
+                            outputStream.Position = 0;
+                            using var reader = new StreamReader(outputStream);
+                            output = reader.ReadToEnd();
                         }
                     }
                     else
                     {
                         var ld = (PgpLiteralData)message;
-                        using (var output = File.Create(outputFile))
+                        using (var outputStream = new MemoryStream())
                         {
                             var unc = ld.GetInputStream();
-                            Streams.PipeAll(unc, output);
+                            Streams.PipeAll(unc, outputStream);
+                            outputStream.Position = 0;
+                            using var reader = new StreamReader(outputStream);
+                            output = reader.ReadToEnd();
                         }
                     }
 
@@ -128,10 +128,13 @@ namespace Frends.HIT.Pgp
                 }
                 case PgpLiteralData ld:
                 {
-                    using (var fOut = File.Create(outputFile))
+                    using (var fOut = new MemoryStream())
                     {
                         var unc = ld.GetInputStream();
                         Streams.PipeAll(unc, fOut);
+                        fOut.Position = 0;
+                        using var reader = new StreamReader(fOut);
+                        output = reader.ReadToEnd();
                     }
 
                     break;
@@ -158,28 +161,21 @@ namespace Frends.HIT.Pgp
         /// <returns>Returns: Object {string FilePath}</returns>
         public static PgpEncryptResult EncryptFile(PgpEncryptInput input)
         {
-            // source file to encrypt
-            var inputFile = new FileInfo(input.InputFile);
+            var encryptionHandlers = new EncryptionHandler(input);
 
-            if (!inputFile.Exists)
-                throw new ArgumentException("File to encrypt does not exists", input.InputFile);
-
-            // destination file
-            using (Stream outputStream = File.OpenWrite(input.OutputFile))
-            // ascii output?
-            using (var armoredStream = input.UseArmor ? new ArmoredOutputStream(outputStream) : outputStream)
-            using (var encryptedOut = PgpServices.GetEncryptionStream(armoredStream, input))
-            using (var compressedOut = PgpServices.GetCompressionStream(encryptedOut, input))
+            using var outputStream = new MemoryStream();
+            using (var armoredStream = input.UseArmor ? (Stream)new ArmoredOutputStream(outputStream) : outputStream)
+            using (var encryptedOut = PgpServices.GetEncryptionStream(armoredStream, encryptionHandlers))
+            using (var compressedOut = PgpServices.GetCompressionStream(encryptedOut, encryptionHandlers))
             {
                 // signature init - if necessary
-                var signatureGenerator = input.SignWithPrivateKey ? PgpServices.InitPgpSignatureGenerator(compressedOut, input) : null;
+                var signatureGenerator = input.SignWithPrivateKey ? PgpServices.InitPgpSignatureGenerator(compressedOut, encryptionHandlers) : null;
 
                 // writing to configured output
                 var literalDataGenerator = new PgpLiteralDataGenerator();
-                var file = new FileInfo(input.InputFile);
-                using (var literalOut = literalDataGenerator.Open(compressedOut, PgpLiteralData.Binary, file.Name, file.Length, DateTime.Now))
-                using (var inputStream = inputFile.OpenRead())
+                using (var literalOut = literalDataGenerator.Open(compressedOut, PgpLiteralData.Binary, encryptionHandlers.Name, encryptionHandlers.Length, DateTime.Now))
                 {
+                    using var inputStream = encryptionHandlers.InputStream();
                     var buf = new byte[EncryptBufferSize];
                     int len;
 
@@ -198,13 +194,14 @@ namespace Frends.HIT.Pgp
                     }
                 }
             }
-
-            return new PgpEncryptResult
+            outputStream.Position = 0;
+            using (var reader = new StreamReader(outputStream))
             {
-                FilePath = input.OutputFile
-            };
-
-
+                return new PgpEncryptResult
+                {
+                    Output = reader.ReadToEnd()
+                };
+            }
         }
 
         #endregion
@@ -216,12 +213,13 @@ namespace Frends.HIT.Pgp
         /// </summary>
         public static PgpSignatureResult SignFile(PgpSignatureInput input)
         {
-            HashAlgorithmTag digest = input.HashFunction.ConvertEnum<HashAlgorithmTag>();
+            var signatureHandler = new SignatureHandler(input);
+            var digest = signatureHandler.HashFunction.ConvertEnum<HashAlgorithmTag>();
 
-            using (var privateKeyStream = PgpKeystream.GetPrivateKeyStream(input))
+            using (var privateKeyStream = signatureHandler.KeyStream())
             {
                 var pgpSecKey = PgpServices.SignatureReadSecretKey(privateKeyStream);
-                var pgpPrivKey = pgpSecKey.ExtractPrivateKey(input.Password.ToCharArray());
+                var pgpPrivKey = pgpSecKey.ExtractPrivateKey(signatureHandler.GetPassword().ToCharArray());
                 var signatureGenerator = new PgpSignatureGenerator(pgpSecKey.PublicKey.Algorithm, digest);
                 var signatureSubpacketGenerator = new PgpSignatureSubpacketGenerator();
 
@@ -234,17 +232,16 @@ namespace Frends.HIT.Pgp
                     signatureGenerator.SetHashedSubpackets(signatureSubpacketGenerator.Generate());
                 }
 
-                using (var outputStream = File.Create(input.OutputFile))
+                using (var outputStream = new MemoryStream())
                 {
                     var armoredOutputStream = new ArmoredOutputStream(outputStream);
 
                     var bcbgOutputStream = new BcpgOutputStream(armoredOutputStream);
                     signatureGenerator.GenerateOnePassVersion(false).Encode(bcbgOutputStream);
-
-                    var file = new FileInfo(input.InputFile);
+                    
                     var literalDataGenerator = new PgpLiteralDataGenerator();
-                    var literalDataOut = literalDataGenerator.Open(bcbgOutputStream, PgpLiteralData.Binary, file.Name, file.Length, DateTime.Now);
-                    using (var fileIn = file.OpenRead())
+                    var literalDataOut = literalDataGenerator.Open(bcbgOutputStream, PgpLiteralData.Binary, signatureHandler.Name, signatureHandler.Length, DateTime.Now);
+                    using (var fileIn = signatureHandler.InputStream())
                     {
                         int ch;
 
@@ -258,13 +255,14 @@ namespace Frends.HIT.Pgp
                         literalDataGenerator.Close();
                         signatureGenerator.Generate().Encode(bcbgOutputStream);
                         armoredOutputStream.Close();
-                        outputStream.Close();
-
-                        var ret = new PgpSignatureResult
+                        
+                        outputStream.Position = 0;
+                        using var reader = new StreamReader(outputStream);
+                        return new PgpSignatureResult
                         {
-                            FilePath = input.OutputFile
+                            Output = reader.ReadToEnd()
                         };
-                        return ret;
+                        
                     }
                 }
             }
@@ -278,9 +276,9 @@ namespace Frends.HIT.Pgp
         /// </summary>
         public static PgpVerifySignatureResult VerifyFileSignature(PgpVerifySignatureInput input)
         {
-
-            using (var inputStream = PgpUtilities.GetDecoderStream(File.OpenRead(input.InputFile)))
-            using (var keyStream = PgpUtilities.GetDecoderStream(PgpKeystream.GetPublicKeyStream(input)))
+            var verifySignatureHandler = new VerifySignatureHandler(input);
+            using (var inputStream = PgpUtilities.GetDecoderStream(verifySignatureHandler.InputStream()))
+            using (var keyStream = PgpUtilities.GetDecoderStream(verifySignatureHandler.KeyStream()))
             {
                 var pgpFact = new PgpObjectFactory(inputStream);
                 var signatureList = (PgpOnePassSignatureList)pgpFact.NextPgpObject();
@@ -298,17 +296,8 @@ namespace Frends.HIT.Pgp
                 var dataIn = p2.GetInputStream();
                 var pgpRing = new PgpPublicKeyRingBundle(keyStream);
                 var key = pgpRing.GetPublicKey(onePassSignature.KeyId);
-
-                string outputPath;
-                if (string.IsNullOrWhiteSpace(input.OutputFolder))
-                {
-                    outputPath = Path.Combine(Path.GetDirectoryName(input.InputFile) ?? throw new ArgumentNullException(input.InputFile), p2.FileName);
-                }
-                else
-                {
-                    outputPath = Path.Combine(input.OutputFolder, p2.FileName);
-                }
-                using (var outputStream = File.Create(outputPath))
+                
+                using (var outputStream = verifySignatureHandler.OutputStream(p2.FileName))
                 {
                     onePassSignature.InitVerify(key);
 
@@ -317,6 +306,13 @@ namespace Frends.HIT.Pgp
                     {
                         onePassSignature.Update((byte)ch);
                         outputStream.WriteByte((byte)ch);
+                    }
+
+                    if (outputStream is MemoryStream)
+                    {
+                        outputStream.Position = 0;
+                        using var reader = new StreamReader(outputStream);
+                        verifySignatureHandler.Output = reader.ReadToEnd();
                     }
                     outputStream.Close();
                 }
@@ -331,22 +327,18 @@ namespace Frends.HIT.Pgp
                 }
                 catch (Exception)
                 {
-                    var retError = new PgpVerifySignatureResult
+                    return new PgpVerifySignatureResult
                     {
-                        FilePath = input.OutputFolder,
+                        FilePath = verifySignatureHandler.GetOutput(),
                         Verified = false
                     };
-
-                    return retError;
                 }
 
-                var ret = new PgpVerifySignatureResult
+                return new PgpVerifySignatureResult
                 {
-                    FilePath = outputPath,
+                    FilePath = verifySignatureHandler.GetOutput(),
                     Verified = verified
                 };
-
-                return ret;
             }
         }
 
@@ -358,39 +350,23 @@ namespace Frends.HIT.Pgp
         /// </summary>
         public static PgpClearTextSignatureResult ClearTextSignFile(PgpClearTextSignatureInput input)
         {
-            HashAlgorithmTag digest;
-            switch (input.HashFunction)
+            var clearTextSignatureHandler = new ClearTextSignatureHandler(input);
+            var digest = clearTextSignatureHandler.HashFunction switch
             {
-                case PgpClearTextSignatureHashFunctionType.Md5:
-                    digest = HashAlgorithmTag.MD5;
-                    break;
-                case PgpClearTextSignatureHashFunctionType.RipeMd160:
-                    digest = HashAlgorithmTag.RipeMD160;
-                    break;
-                case PgpClearTextSignatureHashFunctionType.Sha1:
-                    digest = HashAlgorithmTag.Sha1;
-                    break;
-                case PgpClearTextSignatureHashFunctionType.Sha224:
-                    digest = HashAlgorithmTag.Sha224;
-                    break;
-                case PgpClearTextSignatureHashFunctionType.Sha384:
-                    digest = HashAlgorithmTag.Sha384;
-                    break;
-                case PgpClearTextSignatureHashFunctionType.Sha512:
-                    digest = HashAlgorithmTag.Sha512;
-                    break;
-                case PgpClearTextSignatureHashFunctionType.Sha256:
-                    digest = HashAlgorithmTag.Sha256;
-                    break;
-                default:
-                    digest = HashAlgorithmTag.Sha256;
-                    break;
-            }
+                PgpClearTextSignatureHashFunctionType.Md5 => HashAlgorithmTag.MD5,
+                PgpClearTextSignatureHashFunctionType.RipeMd160 => HashAlgorithmTag.RipeMD160,
+                PgpClearTextSignatureHashFunctionType.Sha1 => HashAlgorithmTag.Sha1,
+                PgpClearTextSignatureHashFunctionType.Sha224 => HashAlgorithmTag.Sha224,
+                PgpClearTextSignatureHashFunctionType.Sha384 => HashAlgorithmTag.Sha384,
+                PgpClearTextSignatureHashFunctionType.Sha512 => HashAlgorithmTag.Sha512,
+                PgpClearTextSignatureHashFunctionType.Sha256 => HashAlgorithmTag.Sha256,
+                _ => HashAlgorithmTag.Sha256
+            };
 
-            var privateKeyStream = PgpKeystream.GetPrivateKeyStream(input);
+            var privateKeyStream = clearTextSignatureHandler.KeyStream();
 
             var pgpSecKey = PgpServices.ReadSecretKey(privateKeyStream);
-            var pgpPrivKey = pgpSecKey.ExtractPrivateKey(input.Password.ToCharArray());
+            var pgpPrivKey = pgpSecKey.ExtractPrivateKey(clearTextSignatureHandler.GetPassword().ToCharArray());
             var sGen = new PgpSignatureGenerator(pgpSecKey.PublicKey.Algorithm, digest);
             var spGen = new PgpSignatureSubpacketGenerator();
 
@@ -403,11 +379,9 @@ namespace Frends.HIT.Pgp
                 sGen.SetHashedSubpackets(spGen.Generate());
             }
 
-            var fIn = File.OpenRead(input.InputFile);
-            var outputStream = File.Create(input.OutputFile);
-
-            var aOut = new ArmoredOutputStream(outputStream);
-
+            using var fIn = clearTextSignatureHandler.InputStream();
+            using var outputStream = new MemoryStream();
+            using var aOut = new ArmoredOutputStream(outputStream);
             aOut.BeginClearText(digest);
 
             //
@@ -428,23 +402,19 @@ namespace Frends.HIT.Pgp
                 PgpServices.ProcessLine(aOut, sGen, lineOut.ToArray());
             }
 
-            fIn.Close();
-
             aOut.EndClearText();
 
             var bOut = new BcpgOutputStream(aOut);
 
             sGen.Generate().Encode(bOut);
-
             aOut.Close();
-            outputStream.Close();
-
-            var ret = new PgpClearTextSignatureResult
+            
+            outputStream.Position = 0;
+            using var reader = new StreamReader(outputStream);
+            return new PgpClearTextSignatureResult
             {
-                FilePath = input.OutputFile
+                Output = reader.ReadToEnd()
             };
-
-            return ret;
         }
 
         #endregion
@@ -455,9 +425,10 @@ namespace Frends.HIT.Pgp
         /// </summary>
         public static PgpVerifyClearTextSignatureResult VerifyFileClearTextSignature(PgpVerifyClearTextSignatureInput input)
         {
-            using (var inStr = File.OpenRead(input.InputFile))
-            using (var outStr = File.Create(input.OutputFile))
-            using (var keyStr = PgpUtilities.GetDecoderStream(PgpKeystream.GetPublicKeyStream(input)))
+            var verifyClearTextSignatureHandler = new VerifyClearTextSignatureHandler(input);
+            using (var inStr = verifyClearTextSignatureHandler.InputStream())
+            using (var outStr = new MemoryStream())
+            using (var keyStr = PgpUtilities.GetDecoderStream(verifyClearTextSignatureHandler.KeyStream()))
             {
                 var aInputStr = new ArmoredInputStream(inStr);
 
@@ -496,6 +467,12 @@ namespace Frends.HIT.Pgp
                         outStr.Write(lineSep, 0, lineSep.Length);
                     }
                 }
+
+                outStr.Position = 0;
+                using (var reader = new StreamReader(outStr))
+                {
+                    verifyClearTextSignatureHandler.Output = reader.ReadToEnd();
+                }
                 outStr.Close();
 
                 var pgpRings = new PgpPublicKeyRingBundle(keyStr);
@@ -509,7 +486,7 @@ namespace Frends.HIT.Pgp
                 sig.InitVerify(pgpRings.GetPublicKey(sig.KeyId));
                 // read the input, making sure we ignore the last newline.
                 bool verified;
-                using (var sigIn = File.OpenRead(input.OutputFile))
+                using (var sigIn = verifyClearTextSignatureHandler.OutputStream())
                 {
                     lookAhead = PgpServices.VerifyClearTextSignatureReadInputLine(lineOut, sigIn);
                     PgpServices.ProcessLine(sig, lineOut.ToArray());
@@ -526,13 +503,11 @@ namespace Frends.HIT.Pgp
                     verified = sig.Verify();
                     sigIn.Close();
                 }
-                var ret = new PgpVerifyClearTextSignatureResult
+                return new PgpVerifyClearTextSignatureResult
                 {
-                    FilePath = input.OutputFile,
+                    Output = verifyClearTextSignatureHandler.Output,
                     Verified = verified
                 };
-
-                return ret;
             }
         }
 

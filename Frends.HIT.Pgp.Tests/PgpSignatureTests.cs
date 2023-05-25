@@ -2,8 +2,7 @@
 using NUnit.Framework;
 using System.IO;
 using System.Text.RegularExpressions;
-
-
+using Assert = NUnit.Framework.Assert;
 
 namespace Frends.HIT.Pgp.Tests
 {
@@ -19,6 +18,13 @@ namespace Frends.HIT.Pgp.Tests
         private static readonly string Signature = Path.Combine(TestData, TestFolder, "signature.txt");
         private static readonly string MessagePath = Path.Combine(TestData, TestFolder, "original_message.txt");
         private static readonly string KeyPassword = "testisalasana1";
+        private string _userInputString;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _userInputString = File.ReadAllText(MessagePath);
+        }
 
         [Test]
         public void SignOneFileSha1PrivateKeyFile()
@@ -32,11 +38,34 @@ namespace Frends.HIT.Pgp.Tests
                 HashFunction = PgpSignatureHashFunctionType.Sha1,
             };
 
-            PgpSignatureResult resultObject = PgpTasks.SignFile(input);
+            var resultObject = PgpTasks.SignFile(input);
 
-            string result = File.ReadAllText(resultObject.FilePath);
+            var result = resultObject.Output;
 
-            string expectedResult = "-----BEGINPGPMESSAGE-----Version:BCPGC#v1.8.6.0kA0DAAIBQmrabh8os";
+            const string expectedResult = "-----BEGINPGPMESSAGE-----Version:BCPGC#v1.8.6.0kA0DAAIBQmrabh8os";
+            // Rest of the file is random.
+
+            Assert.That(Regex.Replace(result, @"[\s+]", ""), Does.StartWith(Regex.Replace(expectedResult, @"[\s+]", "")));
+
+        }
+        
+        [Test]
+        public void SignOneFileSha1PrivateKeyFileAndUserInput()
+        {
+            PgpSignatureInput input = new PgpSignatureInput
+            {
+                InputString = _userInputString,
+                OutputFile = Signature,
+                PrivateKeyFile = PrivateKeyPath,
+                Password = KeyPassword,
+                HashFunction = PgpSignatureHashFunctionType.Sha1,
+            };
+
+            var resultObject = PgpTasks.SignFile(input);
+
+            var result = resultObject.Output;
+
+            const string expectedResult = "-----BEGINPGPMESSAGE-----Version:BCPGC#v1.8.6.0kA0DAAIBQmrabh8os";
             // Rest of the file is random.
 
             Assert.That(Regex.Replace(result, @"[\s+]", ""), Does.StartWith(Regex.Replace(expectedResult, @"[\s+]", "")));
@@ -57,7 +86,30 @@ namespace Frends.HIT.Pgp.Tests
 
             PgpSignatureResult resultObject = PgpTasks.SignFile(input);
 
-            string result = File.ReadAllText(resultObject.FilePath);
+            string result = resultObject.Output;
+
+            string expectedResult = "-----BEGINPGPMESSAGE-----Version:BCPGC#v1.8.6.0kA0DAAIBQmrabh8os";
+            // Rest of the file is random.
+
+            Assert.That(Regex.Replace(result, @"[\s+]", ""), Does.StartWith(Regex.Replace(expectedResult, @"[\s+]", "")));
+
+        }
+        
+        [Test]
+        public void SignOneFileSha1PrivateKeyStringAndUserInput()
+        {
+            PgpSignatureInput input = new PgpSignatureInput
+            {
+                InputString = _userInputString,
+                OutputFile = Signature,
+                PrivateKey = PrivateKeyString,
+                Password = KeyPassword,
+                HashFunction = PgpSignatureHashFunctionType.Sha1,
+            };
+
+            PgpSignatureResult resultObject = PgpTasks.SignFile(input);
+
+            string result = resultObject.Output;
 
             string expectedResult = "-----BEGINPGPMESSAGE-----Version:BCPGC#v1.8.6.0kA0DAAIBQmrabh8os";
             // Rest of the file is random.

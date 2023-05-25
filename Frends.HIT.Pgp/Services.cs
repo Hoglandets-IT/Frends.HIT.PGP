@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Frends.HIT.Pgp.Handlers;
 using Org.BouncyCastle.Bcpg;
 using Org.BouncyCastle.Bcpg.OpenPgp;
 using Org.BouncyCastle.Security;
@@ -208,9 +209,9 @@ namespace Frends.HIT.Pgp
         /// <param name="stream">Stream to chain for encryption</param>
         /// <param name="input">Task settings</param>
         /// <returns>Encryption chained stream</returns>
-        internal static Stream GetEncryptionStream(Stream stream, PgpEncryptInput input)
+        internal static Stream GetEncryptionStream(Stream stream, EncryptionHandler input)
         {
-            var publicKeyStream = PgpKeystream.GetPublicKeyStream(input);
+            var publicKeyStream = input.KeyStream();
             SymmetricKeyAlgorithmTag algorithmTag = input.EncryptionAlgorithm.ConvertEnum<SymmetricKeyAlgorithmTag>();
             PgpPublicKey publicKey = ReadPublicKey(publicKeyStream);
             PgpEncryptedDataGenerator encryptedDataGenerator = new PgpEncryptedDataGenerator(algorithmTag, input.UseIntegrityCheck, new SecureRandom());
@@ -224,15 +225,12 @@ namespace Frends.HIT.Pgp
         /// <param name="stream">Source stream</param>
         /// <param name="input">Task input</param>
         /// <returns>Compression chained stream or original source</returns>
-        internal static Stream GetCompressionStream(Stream stream, PgpEncryptInput input)
+        internal static Stream GetCompressionStream(Stream stream, EncryptionHandler input)
         {
-            if (input.UseArmor)
-            {
-                CompressionAlgorithmTag compressionTag = input.CompressionType.ConvertEnum<CompressionAlgorithmTag>();
-                PgpCompressedDataGenerator compressedDataGenerator = new PgpCompressedDataGenerator(compressionTag);
-                return compressedDataGenerator.Open(stream);
-            }
-            return stream;
+            if (!input.UseArmor) return stream;
+            CompressionAlgorithmTag compressionTag = input.CompressionType.ConvertEnum<CompressionAlgorithmTag>();
+            PgpCompressedDataGenerator compressedDataGenerator = new PgpCompressedDataGenerator(compressionTag);
+            return compressedDataGenerator.Open(stream);
         }
 
         /// <summary>
@@ -265,10 +263,10 @@ namespace Frends.HIT.Pgp
         /// <param name="stream">Stream to use for signature initialization</param>
         /// <param name="input">Encryption task input</param>
         /// <returns>PgpSignatureGenerator to be used when signing a file</returns>
-        internal static PgpSignatureGenerator InitPgpSignatureGenerator(Stream stream, PgpEncryptInput input)
+        internal static PgpSignatureGenerator InitPgpSignatureGenerator(Stream stream, EncryptionHandler input)
         {
-            HashAlgorithmTag hashAlgorithm = input.SigningSettings.SignatureHashAlgorithm.ConvertEnum<HashAlgorithmTag>();
-            var privateKeyStream = PgpKeystream.GetPrivateKeyStream(input.SigningSettings);
+            var hashAlgorithm = input.SigningSettings.SignatureHashAlgorithm.ConvertEnum<HashAlgorithmTag>();
+            var privateKeyStream = input.SigningSettingsKeyStream();
             try
             {
                 PgpSecretKey secretKey = ReadSecretKey(privateKeyStream);

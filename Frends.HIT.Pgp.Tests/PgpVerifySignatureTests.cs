@@ -15,6 +15,13 @@ namespace Frends.HIT.Pgp.Tests
             Environment.GetEnvironmentVariable("PGPVERIFYSIGNATURE_TEST_CERT");
         private static readonly string PublicKeyPath = Path.Combine(TestData, TestFolder, "dontuse-pub.asc");
         private static readonly string Signature = Path.Combine(TestData, TestFolder, "signature.txt");
+        private string _userInputString;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _userInputString = File.ReadAllText(Signature);
+        }
 
         [Test]
         public void VerifySignOneFileSha1PublicKeyFile()
@@ -25,7 +32,21 @@ namespace Frends.HIT.Pgp.Tests
                 PublicKeyFile = PublicKeyPath,
             };
 
-            PgpVerifySignatureResult resultObject = PgpTasks.VerifyFileSignature(input);
+            var resultObject = PgpTasks.VerifyFileSignature(input);
+
+            Assert.That(resultObject.Verified);
+        }
+        
+        [Test]
+        public void VerifySignOneFileSha1PublicKeyFileAndUserInput()
+        {
+            var input = new PgpVerifySignatureInput
+            {
+                InputString = _userInputString,
+                PublicKeyFile = PublicKeyPath,
+            };
+
+            var resultObject = PgpTasks.VerifyFileSignature(input);
 
             Assert.That(resultObject.Verified);
         }
@@ -39,7 +60,21 @@ namespace Frends.HIT.Pgp.Tests
                 PublicKey = PublicKeyString,
             };
 
-            PgpVerifySignatureResult resultObject = PgpTasks.VerifyFileSignature(input);
+            var resultObject = PgpTasks.VerifyFileSignature(input);
+
+            Assert.That(resultObject.Verified);
+        }
+        
+        [Test]
+        public void VerifySignOneFileSha1PublicKeyStringAndUserInput()
+        {
+            var input = new PgpVerifySignatureInput
+            {
+                InputFile = Signature,
+                PublicKey = PublicKeyString,
+            };
+
+            var resultObject = PgpTasks.VerifyFileSignature(input);
 
             Assert.That(resultObject.Verified);
         }
