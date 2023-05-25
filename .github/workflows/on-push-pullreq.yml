@@ -1,10 +1,10 @@
 name: Build And Push
 on:
   push:
-    paths: ['Frends.HIT.SecureEnelope/**', '.github/workflows/on-push-pullreq.yml']
+    paths: ['Frends.HIT.Pgp/**', '.github/workflows/on-push-pullreq.yml']
     branches: [master]
   pull_request:
-    paths: ['Frends.HIT.SecureEnelope/**', '.github/workflows/on-push-pullreq.yml']
+    paths: ['Frends.HIT.Pgp/**', '.github/workflows/on-push-pullreq.yml']
     branches: ['master']
 
 jobs:
