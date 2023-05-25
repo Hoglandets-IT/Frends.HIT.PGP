@@ -38,10 +38,6 @@ namespace Frends.HIT.Pgp
             };
         }
 
-
-
-
-
         internal static bool Decrypt(Stream inputStream, Stream privateKeyStream, string passPhrase, out string output)
         {
             PgpPrivateKey sKey = null;
@@ -329,14 +325,14 @@ namespace Frends.HIT.Pgp
                 {
                     return new PgpVerifySignatureResult
                     {
-                        FilePath = verifySignatureHandler.GetOutput(),
+                        Output = verifySignatureHandler.GetOutput(),
                         Verified = false
                     };
                 }
 
                 return new PgpVerifySignatureResult
                 {
-                    FilePath = verifySignatureHandler.GetOutput(),
+                    Output = verifySignatureHandler.GetOutput(),
                     Verified = verified
                 };
             }

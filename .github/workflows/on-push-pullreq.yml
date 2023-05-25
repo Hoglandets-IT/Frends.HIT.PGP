@@ -3,9 +3,6 @@ on:
   push:
     paths: ['Frends.HIT.Pgp/**', '.github/workflows/on-push-pullreq.yml']
     branches: [master]
-  pull_request:
-    paths: ['Frends.HIT.Pgp/**', '.github/workflows/on-push-pullreq.yml']
-    branches: ['master']
 
 jobs:
   build:
