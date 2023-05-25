@@ -34,6 +34,7 @@ namespace Frends.HIT.Pgp.Tests
         [Test]
         public void VerifySignOneFileSha1PublicKeyString()
         {
+            TestContext.WriteLine($"publicKeystring: {PublicKeyString}");
             PgpVerifyClearTextSignatureInput input = new PgpVerifyClearTextSignatureInput
             {
                 InputFile = Signature,
