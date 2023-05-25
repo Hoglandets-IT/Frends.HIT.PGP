@@ -101,7 +101,7 @@ namespace Frends.HIT.Pgp.Tests
         {
             PgpClearTextSignatureInput input = new PgpClearTextSignatureInput
             {
-                InputFile = _userInputString,
+                InputString = _userInputString,
                 OutputFile = SignedMessage,
                 PrivateKey = PrivateKeyString,
                 Password = KeyPassword,

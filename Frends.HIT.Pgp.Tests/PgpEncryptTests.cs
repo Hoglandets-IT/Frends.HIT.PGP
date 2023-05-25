@@ -62,7 +62,7 @@ namespace Frends.HIT.Pgp.Tests
         {
             PgpEncryptInput input = new PgpEncryptInput
             {
-                InputFile = _userInputString,
+                InputString = _userInputString,
                 OutputFile = EncryptedMessage,
                 PublicKeyFile = PublicKeyPath,
                 UseIntegrityCheck = true,
