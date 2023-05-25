@@ -318,7 +318,7 @@ namespace Frends.HIT.Pgp
         /// <summary>
         /// String to sign.
         /// </summary>
-        [DefaultValue(@"C:\temp\message.txt")]
+        [DefaultValue(@"")]
         [DisplayFormat(DataFormatString = "Text")]
         public string InputString { get; set; }
         /// <summary>
