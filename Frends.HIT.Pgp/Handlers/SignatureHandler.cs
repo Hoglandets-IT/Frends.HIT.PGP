@@ -73,8 +73,10 @@ public class SignatureHandler
     {
         return Password;
     }
+    
     public Stream InputStream()
     {
         return string.IsNullOrEmpty(InputString) ? File.OpenRead(InputFile) : ConvertStringToStream(InputString);
     }
+    
 }

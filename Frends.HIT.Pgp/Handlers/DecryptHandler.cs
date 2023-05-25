@@ -23,21 +23,26 @@ public class DecryptHandler
         PrivateKey = input.PrivateKey;
         PassPhrase = input.PassPhrase;
     }
+    
     private string ModifyPathForOperatingSystem(string path)
     {
         return PgpHelper.GetRightPathForOperatingSystem(path);
     }
+    
     private Stream ConvertStringToStream(string str)
     {
         byte[] byteArray = Encoding.UTF8.GetBytes(str);
         return new MemoryStream(byteArray);
     }
+    
     public Stream KeyStream()
     {
         return string.IsNullOrEmpty(PrivateKey) ? File.OpenRead(PrivateKeyFile) : PgpHelper.KeyStringStream(PrivateKey);
     }
+    
     public Stream InputStream()
     {
         return string.IsNullOrEmpty(InputString) ? File.OpenRead(InputFile) : ConvertStringToStream(InputString);
     }
+    
 }

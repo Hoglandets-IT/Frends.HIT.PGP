@@ -101,4 +101,5 @@ public class EncryptionHandler
         var signingSettingsFile = new FileInfo(modifyPath);
         return signingSettingsFile.OpenRead();
     }
+    
 }
