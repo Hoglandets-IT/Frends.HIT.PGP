@@ -16,6 +16,13 @@ namespace Frends.HIT.Pgp.Tests
         private static readonly string PublicKeyPath = Path.Combine(TestData, TestFolder, "dontuse-pub.asc");
         private static readonly string Signature = Path.Combine(TestData, TestFolder, "signed_message.txt");
         private static readonly string Output = Path.Combine(TestData, TestFolder, "original_message.txt");
+        private string _userInputString;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _userInputString = File.ReadAllText(Signature);
+        }
 
         [Test]
         public void VerifySignOneFileSha1PublicKeyFile()
@@ -27,14 +34,27 @@ namespace Frends.HIT.Pgp.Tests
                 OutputFile = Output,
             };
 
-            PgpVerifyClearTextSignatureResult resultObject = PgpTasks.VerifyFileClearTextSignature(input);
+            var resultObject = PgpTasks.VerifyFileClearTextSignature(input);
+            Assert.That(resultObject.Verified);
+        }
+        
+        [Test]
+        public void VerifySignOneFileSha1PublicKeyFileAndUserInput()
+        {
+            PgpVerifyClearTextSignatureInput input = new PgpVerifyClearTextSignatureInput
+            {
+                InputString = _userInputString,
+                PublicKeyFile = PublicKeyPath,
+                OutputFile = Output,
+            };
+
+            var resultObject = PgpTasks.VerifyFileClearTextSignature(input);
             Assert.That(resultObject.Verified);
         }
         
         [Test]
         public void VerifySignOneFileSha1PublicKeyString()
         {
-            TestContext.WriteLine($"publicKeystring: {string.IsNullOrEmpty(PublicKeyString)}");
             PgpVerifyClearTextSignatureInput input = new PgpVerifyClearTextSignatureInput
             {
                 InputFile = Signature,
@@ -42,7 +62,21 @@ namespace Frends.HIT.Pgp.Tests
                 OutputFile = Output,
             };
 
-            PgpVerifyClearTextSignatureResult resultObject = PgpTasks.VerifyFileClearTextSignature(input);
+            var resultObject = PgpTasks.VerifyFileClearTextSignature(input);
+            Assert.That(resultObject.Verified);
+        }
+        
+        [Test]
+        public void VerifySignOneFileSha1PublicKeyStringAndUserInput()
+        {
+            PgpVerifyClearTextSignatureInput input = new PgpVerifyClearTextSignatureInput
+            {
+                InputString = _userInputString,
+                PublicKey = PublicKeyString,
+                OutputFile = Output,
+            };
+
+            var resultObject = PgpTasks.VerifyFileClearTextSignature(input);
             Assert.That(resultObject.Verified);
         }
     }

@@ -45,7 +45,7 @@ public class ClearTextSignatureHandler
     {
         return string.IsNullOrEmpty(InputString) ? File.OpenRead(InputFile) : ConvertStringToStream(InputString);
     }
-
+   
     public string GetPassword()
     {
         return Password;

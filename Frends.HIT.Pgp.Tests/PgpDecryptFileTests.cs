@@ -21,14 +21,14 @@ namespace Frends.HIT.Pgp.Tests
         private static readonly string EncryptedMessage = Path.Combine(TestData, TestFolder, "encrypted_message.pgp");
         private static readonly string DecryptedMessage = Path.Combine(TestData, TestFolder, "decrypted_message.pgp");
         private static readonly string KeyPassword = "kissa2";
-        private static string _encryptedString;
+        private string _userInputString;
 
         [SetUp]
-        public void Setup()
+        public void SetUp()
         {
-            _encryptedString = File.ReadAllText(EncryptedMessage);
+            _userInputString = File.ReadAllText(EncryptedMessage);
         }
-        
+
         [TearDown]
         public void DeleteTmpFile()
         {
@@ -46,11 +46,11 @@ namespace Frends.HIT.Pgp.Tests
                 PassPhrase = KeyPassword,
             };
 
-            PgpDecryptResult resultObject = PgpTasks.DecryptFile(input);
+            var resultObject = PgpTasks.DecryptFile(input);
 
-            string result = resultObject.Output;
+            var result = resultObject.Output;
 
-            string expectedResult = "\"Secret\" message that contains kanji (漢字) to test utf-8 compatibility.";
+            const string expectedResult = "\"Secret\" message that contains kanji (漢字) to test utf-8 compatibility.";
 
             Assert.That(Regex.Replace(result, @"[\s+]", ""), Does.StartWith(Regex.Replace(expectedResult, @"[\s+]", "")));
         }
@@ -60,19 +60,57 @@ namespace Frends.HIT.Pgp.Tests
         {
             PgpDecryptInput input = new PgpDecryptInput
             {
-                InputString = _encryptedString,
+                InputFile = EncryptedMessage,
                 OutputFile = DecryptedMessage,
                 PrivateKey = PrivateKeyString,
                 PassPhrase = KeyPassword,
             };
 
-            var test = _encryptedString;
+            var resultObject = PgpTasks.DecryptFile(input);
+
+            var result = resultObject.Output;
+
+            const string expectedResult = "\"Secret\" message that contains kanji (漢字) to test utf-8 compatibility.";
+
+            Assert.That(Regex.Replace(result, @"[\s+]", ""), Does.StartWith(Regex.Replace(expectedResult, @"[\s+]", "")));
+        }
+        
+        [Test]
+        public void DecryptFilePrivateKeyFileAndUserInput()
+        {
+            PgpDecryptInput input = new PgpDecryptInput
+            {
+                InputString = _userInputString,
+                OutputFile = DecryptedMessage,
+                PrivateKeyFile = PrivateKeyPath,
+                PassPhrase = KeyPassword,
+            };
 
             var resultObject = PgpTasks.DecryptFile(input);
 
             var result = resultObject.Output;
 
-            var expectedResult = "\"Secret\" message that contains kanji (漢字) to test utf-8 compatibility.";
+            const string expectedResult = "\"Secret\" message that contains kanji (漢字) to test utf-8 compatibility.";
+
+            Assert.That(Regex.Replace(result, @"[\s+]", ""), Does.StartWith(Regex.Replace(expectedResult, @"[\s+]", "")));
+        }
+        
+        [Test]
+        public void DecryptFilePrivateKeyStringAndUserInput()
+        {
+            PgpDecryptInput input = new PgpDecryptInput
+            {
+                InputString = _userInputString,
+                OutputFile = DecryptedMessage,
+                PrivateKey = PrivateKeyString,
+                PassPhrase = KeyPassword,
+            };
+
+            var resultObject = PgpTasks.DecryptFile(input);
+
+            var result = resultObject.Output;
+
+            const string expectedResult = "\"Secret\" message that contains kanji (漢字) to test utf-8 compatibility.";
 
             Assert.That(Regex.Replace(result, @"[\s+]", ""), Does.StartWith(Regex.Replace(expectedResult, @"[\s+]", "")));
         }
