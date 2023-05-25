@@ -30,6 +30,7 @@ public class ClearTextSignatureHandler
     {
         return PgpHelper.GetRightPathForOperatingSystem(path);
     }
+    
     private Stream ConvertStringToStream(string str)
     {
         byte[] byteArray = Encoding.UTF8.GetBytes(str);
@@ -45,9 +46,10 @@ public class ClearTextSignatureHandler
     {
         return string.IsNullOrEmpty(InputString) ? File.OpenRead(InputFile) : ConvertStringToStream(InputString);
     }
-   
+    
     public string GetPassword()
     {
         return Password;
     }
+    
 }

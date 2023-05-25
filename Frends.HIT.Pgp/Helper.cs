@@ -4,16 +4,13 @@ using System.Text;
 
 namespace Frends.HIT.Pgp
 {
-    /// <summary>
-    /// PgpHelper help class
-    /// </summary>
     public static class PgpHelper
     {
         /// <summary>
         /// Create Key string to Stream
         /// </summary>
         /// <param name="key"></param>
-        /// <returns></returns>
+        /// <returns>Stream</returns>
         public static Stream KeyStringStream(string key)
         {
             if (string.IsNullOrEmpty(key)) return null;
@@ -24,7 +21,7 @@ namespace Frends.HIT.Pgp
         /// Convert path so it works for OperatingSystem it is running in
         /// </summary>
         /// <param name="path"></param>
-        /// <returns></returns>
+        /// <returns>String</returns>
         public static string GetRightPathForOperatingSystem(string path)
         {
             if (string.IsNullOrEmpty(path)) return null;

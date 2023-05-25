@@ -17,7 +17,6 @@
 		},
 		{
 			"TaskMethod": "Frends.HIT.Pgp.PgpTasks.PgpVerifyFileClearTextSignature"
-		},
-
+		}
 	]
 }
