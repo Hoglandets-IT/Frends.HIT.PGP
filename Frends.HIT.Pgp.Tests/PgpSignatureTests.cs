@@ -54,7 +54,7 @@ namespace Frends.HIT.Pgp.Tests
         {
             PgpSignatureInput input = new PgpSignatureInput
             {
-                InputString = _messageString,
+                InputFile = MessagePath,
                 OutputFile = Signature,
                 PrivateKey = PrivateKeyString,
                 Password = KeyPassword,
